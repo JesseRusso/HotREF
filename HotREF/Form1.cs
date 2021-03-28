@@ -9,6 +9,9 @@ using System.Xml.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using DocumentFormat.OpenXml.Packaging;
+using DocumentFormat.OpenXml.Spreadsheet;
+
 
 namespace HotREF
 {
@@ -16,14 +19,17 @@ namespace HotREF
     {
 
         XDocument propHouse;
-        
-        string filePath;
+        XDocument template;
+
         string tankEF = "0.58";
         string furnaceOutput;
         string fanPower = "125.3";
         string ventilation = "57.2";
         string windowSize;
         string doorSize;
+        string excelFilePath;
+
+
         public Form1()
         {
             InitializeComponent();
@@ -34,11 +40,11 @@ namespace HotREF
             OpenFileDialog ofd = new OpenFileDialog();
             ofd.Title = "Select Proposed File";
             ofd.Filter = "House Files (*.h2k)|*.h2k";
+
             if (ofd.ShowDialog() == DialogResult.OK)
             {
-                filePath = ofd.FileName;
-                textBox1.Text = filePath;
-                propHouse = XDocument.Load(filePath);
+                textBox1.Text = ofd.FileName;
+                propHouse = XDocument.Load(ofd.FileName);
             }
             ofd.Dispose();
         }
@@ -134,25 +140,52 @@ namespace HotREF
 
         private void Button1_Click_1(object sender, EventArgs e)
         {
+
             OpenFileDialog ofd = new OpenFileDialog();
-            ofd.Title = "Select workbook";
-            ofd.Filter = "*.xlsx";
+            ofd.Title = "Select worksheet";
+            ofd.Filter = "Excel Files (*.xlsm) | *.xlsm";
+
             if (ofd.ShowDialog() == DialogResult.OK)
             {
-                var sheet = ofd.FileName;
+                excelFilePath = ofd.FileName.ToString();
             }
             ofd.Dispose();
         }
 
-        private void GroupBox1_Enter(object sender, EventArgs e)
+
+        private void CreateProp_Click(object sender, EventArgs e)
         {
+            CreateProp cp = new CreateProp(excelFilePath, template);
+
+            cp.FindID(template);
+            template = cp.ChangeEquipment();
+            template = cp.ChangeSpecs();
+            template = cp.ChangeWalls();
+            template = cp.NewWall();
+
+            SaveFileDialog sfd = new SaveFileDialog();
+            sfd.Title = "Save Generated Proposed House";
+            sfd.Filter = " H2K files (*.h2k)| *.h2k";
+            if (sfd.ShowDialog() == DialogResult.OK)
+            {
+                template.Save(sfd.FileName);
+            }
 
         }
 
-        private void SettingsToolStripMenuItem_Click(object sender, EventArgs e)
+        private void TemplateButton_Click(object sender, EventArgs e)
         {
+            OpenFileDialog ofd = new OpenFileDialog();
+            ofd.Title = "Select HOT2000 builder template";
+            ofd.Filter = "House Files(*.h2k) | *.h2k";
 
+            if (ofd.ShowDialog() == DialogResult.OK)
+            {
+                template = XDocument.Load(ofd.FileName);
+            }
+            ofd.Dispose();
         }
+
     }
 }
 

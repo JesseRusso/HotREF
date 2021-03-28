@@ -3,6 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
+using DocumentFormat.OpenXml.Packaging;
+using DocumentFormat.OpenXml.Spreadsheet;
 
 namespace HotREF
 {
@@ -20,6 +22,7 @@ namespace HotREF
         string doorRValue = "0.6252";
         int maxID;
         int codeID = 3;
+
         public CreateRef(XDocument house)
         {
             List<char> codeIDs = new List<char>();
@@ -67,7 +70,7 @@ namespace HotREF
             house.Descendants("BaseVentilator").Remove();
             return house;
         }
-        //Changes 
+        //Changes R value for ceilings, walls, 
         public XDocument RChanger(XDocument house)
         {
             //Changes R values of ceiling elements
@@ -166,7 +169,7 @@ namespace HotREF
         {
             //Convert BTUs/h entered to KW
             double btus = System.Convert.ToDouble(furnaceOutput);
-            btus = Math.Round((btus * 0.00029307107), 4);
+            btus = Math.Round((btus * 0.00029307107), 5);
             furnaceOutput = btus.ToString();
 
             // Changes furnace output capacity and EF values
@@ -292,6 +295,7 @@ namespace HotREF
             {
                 wallList.Add(wall);
             }
+            //Checks if a second floor exists. If not, windows are added to the first floor
             if (wallList.Contains("2nd Flr") != true)
             {
                 floors = "1st Flr";
@@ -431,10 +435,7 @@ namespace HotREF
                                     new XElement("French", "Ouest"))));
                             maxID++;
                         }
-                    
-
                     }
-
             }
             return house;
         }

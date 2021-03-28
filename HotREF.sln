@@ -7,8 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HotREF", "HotREF\HotREF.csp
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{3D89BEB7-26D6-4819-8416-21D7F6336B95}"
 EndProject
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Hot-REF Installer", "Hot-Ref\Hot-Ref.vdproj", "{09A85B21-74E2-4624-988C-2EA7A46C729A}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -25,13 +23,6 @@ Global
 		{B7C8D39F-CAA6-4925-9D5C-52524FDF9448}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B7C8D39F-CAA6-4925-9D5C-52524FDF9448}.Release|Default.ActiveCfg = Release|Any CPU
 		{B7C8D39F-CAA6-4925-9D5C-52524FDF9448}.Release|Default.Build.0 = Release|Any CPU
-		{09A85B21-74E2-4624-988C-2EA7A46C729A}.Debug|Any CPU.ActiveCfg = Debug
-		{09A85B21-74E2-4624-988C-2EA7A46C729A}.Debug|Default.ActiveCfg = Debug
-		{09A85B21-74E2-4624-988C-2EA7A46C729A}.Debug|Default.Build.0 = Debug
-		{09A85B21-74E2-4624-988C-2EA7A46C729A}.Release|Any CPU.ActiveCfg = Release
-		{09A85B21-74E2-4624-988C-2EA7A46C729A}.Release|Any CPU.Build.0 = Release
-		{09A85B21-74E2-4624-988C-2EA7A46C729A}.Release|Default.ActiveCfg = Release
-		{09A85B21-74E2-4624-988C-2EA7A46C729A}.Release|Default.Build.0 = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

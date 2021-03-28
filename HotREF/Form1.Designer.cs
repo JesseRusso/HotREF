@@ -51,6 +51,9 @@
             this.label4 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.TemplateButton = new System.Windows.Forms.Button();
+            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.CreateProp = new System.Windows.Forms.Button();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -69,7 +72,7 @@
             this.buttonExcel.Name = "buttonExcel";
             this.buttonExcel.Size = new System.Drawing.Size(190, 23);
             this.buttonExcel.TabIndex = 19;
-            this.buttonExcel.Text = "Choose Workbook";
+            this.buttonExcel.Text = "Choose Worksheet";
             this.buttonExcel.UseVisualStyleBackColor = true;
             this.buttonExcel.Click += new System.EventHandler(this.Button1_Click_1);
             // 
@@ -90,7 +93,7 @@
             this.textBox1.Location = new System.Drawing.Point(19, 69);
             this.textBox1.Name = "textBox1";
             this.textBox1.ReadOnly = true;
-            this.textBox1.Size = new System.Drawing.Size(314, 20);
+            this.textBox1.Size = new System.Drawing.Size(354, 20);
             this.textBox1.TabIndex = 1;
             // 
             // createRefButton
@@ -107,7 +110,7 @@
             // button2
             // 
             this.button2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.button2.Location = new System.Drawing.Point(245, 379);
+            this.button2.Location = new System.Drawing.Point(284, 379);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(89, 23);
             this.button2.TabIndex = 12;
@@ -248,23 +251,62 @@
             this.groupBox1.Controls.Add(this.textBox2);
             this.groupBox1.Controls.Add(this.button2);
             this.groupBox1.Controls.Add(this.selectFile);
-            this.groupBox1.Location = new System.Drawing.Point(219, 33);
+            this.groupBox1.Location = new System.Drawing.Point(11, 321);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(343, 407);
+            this.groupBox1.Size = new System.Drawing.Size(382, 407);
             this.groupBox1.TabIndex = 20;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "REFERENCE";
-            this.groupBox1.Enter += new System.EventHandler(this.GroupBox1_Enter);
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.TemplateButton);
+            this.groupBox2.Controls.Add(this.comboBox1);
+            this.groupBox2.Controls.Add(this.CreateProp);
             this.groupBox2.Controls.Add(this.buttonExcel);
-            this.groupBox2.Location = new System.Drawing.Point(11, 33);
+            this.groupBox2.Location = new System.Drawing.Point(11, 27);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(202, 407);
+            this.groupBox2.Size = new System.Drawing.Size(382, 288);
             this.groupBox2.TabIndex = 21;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "PROPOSED";
+            // 
+            // TemplateButton
+            // 
+            this.TemplateButton.Location = new System.Drawing.Point(6, 68);
+            this.TemplateButton.Name = "TemplateButton";
+            this.TemplateButton.Size = new System.Drawing.Size(190, 23);
+            this.TemplateButton.TabIndex = 26;
+            this.TemplateButton.Text = "Choose Template";
+            this.TemplateButton.UseVisualStyleBackColor = true;
+            this.TemplateButton.Click += new System.EventHandler(this.TemplateButton_Click);
+            // 
+            // comboBox1
+            // 
+            this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBox1.FormattingEnabled = true;
+            this.comboBox1.Items.AddRange(new object[] {
+            "Trico",
+            "Excel",
+            "Jayman",
+            "NuVista",
+            "McKee",
+            "Stepper",
+            "Crystal Creek"});
+            this.comboBox1.Location = new System.Drawing.Point(236, 20);
+            this.comboBox1.Name = "comboBox1";
+            this.comboBox1.Size = new System.Drawing.Size(121, 21);
+            this.comboBox1.TabIndex = 21;
+            // 
+            // CreateProp
+            // 
+            this.CreateProp.Location = new System.Drawing.Point(6, 216);
+            this.CreateProp.Name = "CreateProp";
+            this.CreateProp.Size = new System.Drawing.Size(190, 23);
+            this.CreateProp.TabIndex = 20;
+            this.CreateProp.Text = "Create Proposed Template";
+            this.CreateProp.UseVisualStyleBackColor = true;
+            this.CreateProp.Click += new System.EventHandler(this.CreateProp_Click);
             // 
             // menuStrip1
             // 
@@ -272,7 +314,7 @@
             this.toolStripMenuItem1});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(570, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(405, 24);
             this.menuStrip1.TabIndex = 22;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -289,16 +331,15 @@
             // settingsToolStripMenuItem
             // 
             this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
-            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(116, 22);
             this.settingsToolStripMenuItem.Text = "Settings";
-            this.settingsToolStripMenuItem.Click += new System.EventHandler(this.SettingsToolStripMenuItem_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
-            this.ClientSize = new System.Drawing.Size(570, 444);
+            this.ClientSize = new System.Drawing.Size(405, 740);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.menuStrip1);
@@ -346,6 +387,9 @@
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem;
+        private System.Windows.Forms.Button CreateProp;
+        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.Button TemplateButton;
     }
 }
 
