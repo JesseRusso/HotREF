@@ -251,7 +251,7 @@
             this.groupBox1.Controls.Add(this.textBox2);
             this.groupBox1.Controls.Add(this.button2);
             this.groupBox1.Controls.Add(this.selectFile);
-            this.groupBox1.Location = new System.Drawing.Point(11, 321);
+            this.groupBox1.Location = new System.Drawing.Point(11, 223);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(382, 407);
             this.groupBox1.TabIndex = 20;
@@ -266,7 +266,7 @@
             this.groupBox2.Controls.Add(this.buttonExcel);
             this.groupBox2.Location = new System.Drawing.Point(11, 27);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(382, 288);
+            this.groupBox2.Size = new System.Drawing.Size(382, 190);
             this.groupBox2.TabIndex = 21;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "PROPOSED";
@@ -300,7 +300,7 @@
             // 
             // CreateProp
             // 
-            this.CreateProp.Location = new System.Drawing.Point(6, 216);
+            this.CreateProp.Location = new System.Drawing.Point(6, 151);
             this.CreateProp.Name = "CreateProp";
             this.CreateProp.Size = new System.Drawing.Size(190, 23);
             this.CreateProp.TabIndex = 20;
@@ -339,13 +339,14 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
-            this.ClientSize = new System.Drawing.Size(405, 740);
+            this.ClientSize = new System.Drawing.Size(405, 639);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.menuStrip1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
+            this.MaximizeBox = false;
             this.MinimumSize = new System.Drawing.Size(365, 453);
             this.Name = "Form1";
             this.RightToLeft = System.Windows.Forms.RightToLeft.No;

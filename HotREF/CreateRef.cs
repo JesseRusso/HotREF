@@ -99,7 +99,7 @@ namespace HotREF
             {
                 //Check for garage walls
                 foreach (XElement type in wall.Descendants("Type"))
-                    if (wall.Element("Label").Value.ToString().Equals("Garage Wall"))
+                    if (wall.Element("Label").Value.ToString().Contains("Garage"))
                     {
                         //If wall is a garage wall
                         type.SetAttributeValue("rValue", garWallRValue);

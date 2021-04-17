@@ -95,6 +95,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Ceiling.cs" />
     <Compile Include="CreateProp.cs" />
     <Compile Include="CreateRef.cs" />
     <Compile Include="Form1.cs">

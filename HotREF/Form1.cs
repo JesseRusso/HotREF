@@ -28,7 +28,7 @@ namespace HotREF
         string windowSize;
         string doorSize;
         string excelFilePath;
-
+         
 
         public Form1()
         {
@@ -160,8 +160,14 @@ namespace HotREF
             cp.FindID(template);
             template = cp.ChangeEquipment();
             template = cp.ChangeSpecs();
-            template = cp.ChangeWalls();
-            template = cp.NewWall();
+            cp.ChangeWalls();
+            cp.CheckCeilings();
+            template = cp.ChangeFloors();
+            cp.ExtraFloors();
+            cp.ExtraCeilings();
+            cp.CheckVaults();
+            cp.ExtraSecondWalls();
+            cp.ChangeBasment();
 
             SaveFileDialog sfd = new SaveFileDialog();
             sfd.Title = "Save Generated Proposed House";
@@ -170,6 +176,7 @@ namespace HotREF
             {
                 template.Save(sfd.FileName);
             }
+            template = null;
 
         }
 
