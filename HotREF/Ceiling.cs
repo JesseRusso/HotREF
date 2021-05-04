@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using HotREF.Properties;
 
 namespace HotREF
 {
@@ -23,6 +24,7 @@ namespace HotREF
         string slopeValue;
         string slopeEng;
         string slopeFr;
+        string slopeRise;
         string slopeName = "";
         string rValue;
 
@@ -34,17 +36,17 @@ namespace HotREF
             areaMetric = Math.Round(System.Convert.ToDouble(area) * 0.092903, 4).ToString();
             lengthMetric = Math.Round(System.Convert.ToDouble(length) * 0.3048, 4).ToString();
             heelHeight = Math.Round(System.Convert.ToDouble(heel) * 0.3048, 3).ToString();
-            rValue = CreateProp.ceilingRValue;
             SetType();
             SetSlope();
         }
 
-        public Ceiling(string name, string type, string area, string length, string slope,string heel, bool vault)
+        public Ceiling(string name, string type, string area, string length, string slope, string rise, string heel, bool vault)
         {
             vaultCheck = vault;
             ceilingName = name;
             ceilingType = type;
             ceilingSlope = slope;
+            slopeRise = rise;
             heelHeight = Math.Round(System.Convert.ToDouble(heel) * 0.3048, 3).ToString();
             areaMetric = Math.Round(System.Convert.ToDouble(area) * 0.092903, 4).ToString();
             lengthMetric = Math.Round(System.Convert.ToDouble(length) * 0.3048, 4).ToString();
@@ -60,33 +62,44 @@ namespace HotREF
                     typeCode = "2";
                     typeEng = "Attic/gable";
                     typeFr = "Combles/pignon";
+                    rValue = CreateProp.ceilingRValue;
                     break;
                 case "Hip":
                     typeCode = "3";
                     typeEng = "Attic/hip";
                     typeFr = "Combles/arête";
+                    rValue = CreateProp.ceilingRValue;
                     break;
                 case "Cathedral":
                     typeCode = "4";
                     typeEng = "Cathedral";
                     typeFr = "Cathédrale";
+                    rValue = CreateProp.cathedralRValue;
                     break;
                 case "Flat":
                     typeCode = "5";
                     typeEng = "Flat";
                     typeFr = "Plat";
                     slopeName = "Flat";
+                    ceilingSlope = "0";
+                    rValue = CreateProp.flatCeilingRValue;
                     break;
                 case "Scissor":
                     typeCode = "6";
                     typeEng = "Scissor";
                     typeFr = "Ciseaux";
+                    rValue = CreateProp.vaultRValue;
                     break;
                 default:
                     typeCode = "3";
                     typeEng = "Attic/hip";
                     typeFr = "Combles/arête";
+                    rValue = CreateProp.ceilingRValue;
                     break;
+            }
+            if (CreateProp.builder.ToLower().Contains("mckee") && Convert.ToSByte(slopeRise) < 5)
+            {
+                rValue = CreateProp.ceilingRValue;
             }
         }
 
@@ -157,10 +170,13 @@ namespace HotREF
             if (CreateProp.ceilingCount > 1)
             {
                 slopeName = ceilingSlope + "/12";
+                if (this.slopeCode.Equals("1"))
+                {
+                    slopeName = "Flat";
+                }
             }
-            if (vaultCheck == true)
+            if (vaultCheck)
             {
-                rValue = CreateProp.vaultRValue;
                 slopeName = "";
             }
             XElement comp = (XElement)(from el in CreateProp.newHouse.Descendants("Components")

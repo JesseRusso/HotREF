@@ -4,20 +4,14 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
-using System.Linq;
 using System.Xml.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using DocumentFormat.OpenXml.Packaging;
-using DocumentFormat.OpenXml.Spreadsheet;
-
-
+using HotREF.Properties;
 namespace HotREF
 {
     public partial class Form1 : Form
     {
-
         XDocument propHouse;
         XDocument template;
 
@@ -28,6 +22,7 @@ namespace HotREF
         string windowSize;
         string doorSize;
         string excelFilePath;
+        string zone = "7A";
          
 
         public Form1()
@@ -51,7 +46,7 @@ namespace HotREF
 
         private void Form1_Load(object sender, EventArgs e)
         {
-
+            this.Location = Settings.Default.WindowLocation;
         }
 
         private void Button1_Click(object sender, EventArgs e)
@@ -82,7 +77,7 @@ namespace HotREF
             }
             else
             {
-                CreateRef cr = new CreateRef(propHouse);
+                CreateRef cr = new CreateRef(propHouse,zone);
                 cr.FindID(propHouse);
                 propHouse = cr.Remover(propHouse);
                 propHouse = cr.AddCode(propHouse);
@@ -158,15 +153,15 @@ namespace HotREF
             CreateProp cp = new CreateProp(excelFilePath, template);
 
             cp.FindID(template);
-            template = cp.ChangeEquipment();
-            template = cp.ChangeSpecs();
+            cp.ChangeEquipment();
+            cp.ChangeSpecs();
             cp.ChangeWalls();
             cp.CheckCeilings();
-            template = cp.ChangeFloors();
+            cp.ChangeFloors();
             cp.ExtraFloors();
             cp.ExtraCeilings();
             cp.CheckVaults();
-            cp.ExtraSecondWalls();
+            cp.ExtraWalls();
             cp.ChangeBasment();
 
             SaveFileDialog sfd = new SaveFileDialog();
@@ -177,7 +172,6 @@ namespace HotREF
                 template.Save(sfd.FileName);
             }
             template = null;
-
         }
 
         private void TemplateButton_Click(object sender, EventArgs e)
@@ -193,6 +187,16 @@ namespace HotREF
             ofd.Dispose();
         }
 
+        private void ZoneSelectBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            zone = ZoneSelectBox.Text;
+        }
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            Settings.Default.WindowLocation = this.Location;
+            Properties.Settings.Default.Save();
+        }
     }
 }
 

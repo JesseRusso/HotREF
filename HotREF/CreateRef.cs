@@ -20,10 +20,11 @@ namespace HotREF
         string slabRValue = "1.902";
         string windowRValue = "0.6252";
         string doorRValue = "0.6252";
+        string weatherZone = "7A";
         int maxID;
         int codeID = 3;
 
-        public CreateRef(XDocument house)
+        public CreateRef(XDocument house, string zone)
         {
             List<char> codeIDs = new List<char>();
             var hasCode = from el in house.Descendants("Codes").Descendants().Attributes("id")
@@ -32,17 +33,18 @@ namespace HotREF
             {
                 codeIDs.Add((code.Last()));
             }
+            weatherZone = zone;
+            SetZone();
+        }
 
-            var builder = from el in house.Descendants("Client").Descendants("MailingAddress").Descendants()
-                          where el.Name == "Name"
-                          select el.Value.ToString();
-            string trico = "Trico Homes";
-
-            if (trico.Equals(builder))
+        private void SetZone()
+        {
+            if (weatherZone.Equals("Zone 6"))
             {
-                codeID = 1;
+                ceilingRValue = "8.6699";
+                floorRValue = "4.6704";
+                bsmtWallRValue = "2.8636";
             }
-
         }
 
         //Finds the highest value ID attribute in order for new windows and doors to have 
@@ -211,7 +213,7 @@ namespace HotREF
                         ef.SetAttributeValue("value", tankEF);
                     }
                 }
-            }
+            }            
             return house;
         }
 

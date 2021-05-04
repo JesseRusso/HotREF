@@ -25,13 +25,24 @@ namespace HotREF.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string Setting {
+        [global::System.Configuration.DefaultSettingValueAttribute("0, 0")]
+        public global::System.Drawing.Point WindowLocation {
             get {
-                return ((string)(this["Setting"]));
+                return ((global::System.Drawing.Point)(this["WindowLocation"]));
             }
             set {
-                this["Setting"] = value;
+                this["WindowLocation"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public global::System.Collections.ArrayList ZoneProfiles {
+            get {
+                return ((global::System.Collections.ArrayList)(this["ZoneProfiles"]));
+            }
+            set {
+                this["ZoneProfiles"] = value;
             }
         }
     }

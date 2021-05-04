@@ -50,16 +50,12 @@
             this.label7 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.ZoneSelectBox = new System.Windows.Forms.ComboBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.TemplateButton = new System.Windows.Forms.Button();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.CreateProp = new System.Windows.Forms.Button();
-            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
-            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
-            this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // openFileDialog1
@@ -71,7 +67,7 @@
             this.buttonExcel.Location = new System.Drawing.Point(6, 19);
             this.buttonExcel.Name = "buttonExcel";
             this.buttonExcel.Size = new System.Drawing.Size(190, 23);
-            this.buttonExcel.TabIndex = 19;
+            this.buttonExcel.TabIndex = 0;
             this.buttonExcel.Text = "Choose Worksheet";
             this.buttonExcel.UseVisualStyleBackColor = true;
             this.buttonExcel.Click += new System.EventHandler(this.Button1_Click_1);
@@ -81,7 +77,7 @@
             this.selectFile.Location = new System.Drawing.Point(19, 19);
             this.selectFile.Name = "selectFile";
             this.selectFile.Size = new System.Drawing.Size(120, 23);
-            this.selectFile.TabIndex = 0;
+            this.selectFile.TabIndex = 3;
             this.selectFile.Text = "Select Proposed File";
             this.selectFile.UseVisualStyleBackColor = true;
             this.selectFile.Click += new System.EventHandler(this.SelectFile_Click);
@@ -90,11 +86,12 @@
             // 
             this.textBox1.BackColor = System.Drawing.SystemColors.ButtonFace;
             this.textBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.textBox1.Location = new System.Drawing.Point(19, 69);
+            this.textBox1.Location = new System.Drawing.Point(19, 72);
             this.textBox1.Name = "textBox1";
             this.textBox1.ReadOnly = true;
             this.textBox1.Size = new System.Drawing.Size(354, 20);
-            this.textBox1.TabIndex = 1;
+            this.textBox1.TabIndex = 4;
+            this.textBox1.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
             // createRefButton
             // 
@@ -102,7 +99,7 @@
             this.createRefButton.Location = new System.Drawing.Point(19, 378);
             this.createRefButton.Name = "createRefButton";
             this.createRefButton.Size = new System.Drawing.Size(120, 23);
-            this.createRefButton.TabIndex = 11;
+            this.createRefButton.TabIndex = 12;
             this.createRefButton.Text = "Create REF";
             this.createRefButton.UseVisualStyleBackColor = true;
             this.createRefButton.Click += new System.EventHandler(this.Button1_Click);
@@ -113,7 +110,7 @@
             this.button2.Location = new System.Drawing.Point(284, 379);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(89, 23);
-            this.button2.TabIndex = 12;
+            this.button2.TabIndex = 13;
             this.button2.Text = "Save";
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.Button2_Click);
@@ -123,15 +120,15 @@
             this.textBox2.Location = new System.Drawing.Point(19, 126);
             this.textBox2.Name = "textBox2";
             this.textBox2.Size = new System.Drawing.Size(79, 20);
-            this.textBox2.TabIndex = 4;
+            this.textBox2.TabIndex = 5;
             this.textBox2.TextChanged += new System.EventHandler(this.TextBox2_TextChanged);
             // 
             // textBox3
             // 
-            this.textBox3.Location = new System.Drawing.Point(19, 179);
+            this.textBox3.Location = new System.Drawing.Point(18, 180);
             this.textBox3.Name = "textBox3";
             this.textBox3.Size = new System.Drawing.Size(79, 20);
-            this.textBox3.TabIndex = 5;
+            this.textBox3.TabIndex = 6;
             this.textBox3.TextChanged += new System.EventHandler(this.TextBox3_TextChanged);
             // 
             // textBox4
@@ -139,7 +136,7 @@
             this.textBox4.Location = new System.Drawing.Point(19, 230);
             this.textBox4.Name = "textBox4";
             this.textBox4.Size = new System.Drawing.Size(79, 20);
-            this.textBox4.TabIndex = 6;
+            this.textBox4.TabIndex = 7;
             this.textBox4.TextChanged += new System.EventHandler(this.TextBox4_TextChanged);
             // 
             // textBox6
@@ -181,7 +178,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(20, 160);
+            this.label2.Location = new System.Drawing.Point(19, 161);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(67, 13);
             this.label2.TabIndex = 12;
@@ -226,7 +223,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(19, 53);
+            this.label4.Location = new System.Drawing.Point(19, 56);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(96, 13);
             this.label4.TabIndex = 18;
@@ -234,6 +231,7 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.ZoneSelectBox);
             this.groupBox1.Controls.Add(this.label4);
             this.groupBox1.Controls.Add(this.label7);
             this.groupBox1.Controls.Add(this.textBox1);
@@ -258,16 +256,28 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "REFERENCE";
             // 
+            // ZoneSelectBox
+            // 
+            this.ZoneSelectBox.FormattingEnabled = true;
+            this.ZoneSelectBox.Items.AddRange(new object[] {
+            "Zone 7A",
+            "Zone 6"});
+            this.ZoneSelectBox.Location = new System.Drawing.Point(284, 21);
+            this.ZoneSelectBox.Name = "ZoneSelectBox";
+            this.ZoneSelectBox.Size = new System.Drawing.Size(89, 21);
+            this.ZoneSelectBox.TabIndex = 11;
+            this.ZoneSelectBox.Text = "Zone 7A";
+            this.ZoneSelectBox.SelectedIndexChanged += new System.EventHandler(this.ZoneSelectBox_SelectedIndexChanged);
+            // 
             // groupBox2
             // 
             this.groupBox2.Controls.Add(this.TemplateButton);
-            this.groupBox2.Controls.Add(this.comboBox1);
             this.groupBox2.Controls.Add(this.CreateProp);
             this.groupBox2.Controls.Add(this.buttonExcel);
-            this.groupBox2.Location = new System.Drawing.Point(11, 27);
+            this.groupBox2.Location = new System.Drawing.Point(11, 12);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(382, 190);
-            this.groupBox2.TabIndex = 21;
+            this.groupBox2.Size = new System.Drawing.Size(382, 205);
+            this.groupBox2.TabIndex = 0;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "PROPOSED";
             // 
@@ -276,63 +286,20 @@
             this.TemplateButton.Location = new System.Drawing.Point(6, 68);
             this.TemplateButton.Name = "TemplateButton";
             this.TemplateButton.Size = new System.Drawing.Size(190, 23);
-            this.TemplateButton.TabIndex = 26;
+            this.TemplateButton.TabIndex = 1;
             this.TemplateButton.Text = "Choose Template";
             this.TemplateButton.UseVisualStyleBackColor = true;
             this.TemplateButton.Click += new System.EventHandler(this.TemplateButton_Click);
-            // 
-            // comboBox1
-            // 
-            this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Items.AddRange(new object[] {
-            "Trico",
-            "Excel",
-            "Jayman",
-            "NuVista",
-            "McKee",
-            "Stepper",
-            "Crystal Creek"});
-            this.comboBox1.Location = new System.Drawing.Point(236, 20);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(121, 21);
-            this.comboBox1.TabIndex = 21;
             // 
             // CreateProp
             // 
             this.CreateProp.Location = new System.Drawing.Point(6, 151);
             this.CreateProp.Name = "CreateProp";
             this.CreateProp.Size = new System.Drawing.Size(190, 23);
-            this.CreateProp.TabIndex = 20;
+            this.CreateProp.TabIndex = 2;
             this.CreateProp.Text = "Create Proposed Template";
             this.CreateProp.UseVisualStyleBackColor = true;
             this.CreateProp.Click += new System.EventHandler(this.CreateProp_Click);
-            // 
-            // menuStrip1
-            // 
-            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripMenuItem1});
-            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
-            this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(405, 24);
-            this.menuStrip1.TabIndex = 22;
-            this.menuStrip1.Text = "menuStrip1";
-            // 
-            // toolStripMenuItem1
-            // 
-            this.toolStripMenuItem1.BackColor = System.Drawing.SystemColors.Control;
-            this.toolStripMenuItem1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.toolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.settingsToolStripMenuItem});
-            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(61, 20);
-            this.toolStripMenuItem1.Text = "Settings";
-            // 
-            // settingsToolStripMenuItem
-            // 
-            this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
-            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(116, 22);
-            this.settingsToolStripMenuItem.Text = "Settings";
             // 
             // Form1
             // 
@@ -342,23 +309,19 @@
             this.ClientSize = new System.Drawing.Size(405, 639);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
-            this.Controls.Add(this.menuStrip1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.MainMenuStrip = this.menuStrip1;
             this.MaximizeBox = false;
             this.MinimumSize = new System.Drawing.Size(365, 453);
             this.Name = "Form1";
             this.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.Text = "HOT-REF";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.Load += new System.EventHandler(this.Form1_Load);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
-            this.menuStrip1.ResumeLayout(false);
-            this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
@@ -385,12 +348,9 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.GroupBox groupBox2;
-        private System.Windows.Forms.MenuStrip menuStrip1;
-        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
-        private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem;
         private System.Windows.Forms.Button CreateProp;
-        private System.Windows.Forms.ComboBox comboBox1;
         private System.Windows.Forms.Button TemplateButton;
+        private System.Windows.Forms.ComboBox ZoneSelectBox;
     }
 }
 
