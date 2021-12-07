@@ -3,8 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
-using DocumentFormat.OpenXml.Packaging;
-using DocumentFormat.OpenXml.Spreadsheet;
+
 
 namespace HotREF
 {
@@ -29,6 +28,7 @@ namespace HotREF
             List<char> codeIDs = new List<char>();
             var hasCode = from el in house.Descendants("Codes").Descendants().Attributes("id")
                           select el;
+
             foreach(string code in hasCode)
             {
                 codeIDs.Add((code.Last()));
@@ -178,6 +178,7 @@ namespace HotREF
             foreach (XElement furnace in house.Descendants("Furnace").Descendants("Specifications"))
             {
                     furnace.SetAttributeValue("efficiency", furnaceEF);
+                    furnace.SetAttributeValue("isSteadyState", "false");
                     furnace.Element("OutputCapacity").SetAttributeValue("value", furnaceOutput);   
             }
             //Changes blower door test value to 2.5

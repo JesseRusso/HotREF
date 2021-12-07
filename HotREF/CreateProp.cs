@@ -118,8 +118,8 @@ namespace HotREF
                 garage.Element("Measurements").SetAttributeValue("perimeter", Math.Round(System.Convert.ToDouble(GetCellValue("Calc", "H30")) * 0.3048, 3));
                 garage.Element("Construction").SetAttributeValue("corners", GetCellValue("Calc", "E30"));
                 garage.Element("Construction").SetAttributeValue("intersections", GetCellValue("Calc", "F30"));
-                garage.Element("Components").Element("FloorHeader").Element("Measurements").SetAttributeValue("height", Math.Round(System.Convert.ToDouble(GetCellValue("Calc", "K38")) * 0.3048, 3));
-                garage.Element("Components").Element("FloorHeader").Element("Measurements").SetAttributeValue("perimeter", Math.Round(System.Convert.ToDouble(GetCellValue("Calc", "J30")) * 0.3048, 3));
+                garage.Element("Components").Element("FloorHeader")?.Element("Measurements").SetAttributeValue("height", Math.Round(System.Convert.ToDouble(GetCellValue("Calc", "K38")) * 0.3048, 3));
+                garage.Element("Components").Element("FloorHeader")?.Element("Measurements").SetAttributeValue("perimeter", Math.Round(System.Convert.ToDouble(GetCellValue("Calc", "J30")) * 0.3048, 3));
             }
         }
 
@@ -147,7 +147,7 @@ namespace HotREF
                                            where el.Element("Label").Value.ToLower().Contains("plumbing")
                                            select el)?.First();
 
-            if (GetCellValue("Calc", "H34") == "0")
+            if (GetCellValue("Calc", "H34") == "0" && plumbing != null)
             {
                 plumbing.Remove();
             }
@@ -164,11 +164,11 @@ namespace HotREF
             bool bsmtUnder4Feet = false;
             bool slabOnGrade = false;
 
-            if (GetCellValue("Calc", "N4")== "y" || GetCellValue("Calc", "N4") == "Y")
+            if (GetCellValue("Calc", "N4") == "y" || GetCellValue("Calc", "N4") == "Y")
             {
                 bsmtUnder4Feet = true;
             }
-            if (GetCellValue("Calc", "N5") == "y" || GetCellValue("Calc", "N5") == "y")
+            if (GetCellValue("Calc", "N5") == "y" || GetCellValue("Calc", "N5") == "Y")
             {
                 slabOnGrade = true;
             }
@@ -203,7 +203,7 @@ namespace HotREF
             else
             {
                 over4.Element("Wall").SetAttributeValue("hasPonyWall", "false");
-                over4.Element("Wall").Element("Construction").Element("PonyWallType").Remove();
+                over4.Element("Wall").Element("Construction").Element("PonyWallType")?.Remove();
                 over4.Element("Wall").Element("Measurements").SetAttributeValue("ponyWallHeight", "0");
             }
             Under4Bsmt(bsmtUnder4Feet);
@@ -320,12 +320,12 @@ namespace HotREF
             {
                 foreach (XElement vent in newHouse.Descendants("WholeHouseVentilatorList"))
                 {
-                    vent.Element("Hrv").Remove();
+                    vent.Element("Hrv")?.Remove();
 
                     vent.Add(
                         new XElement("BaseVentilator",
-                        new XAttribute("supplyFlowrate", Math.Round(System.Convert.ToDouble(hrvFlowrate) * 0.47195, 4).ToString()),
-                        new XAttribute("exhaustFlowrate", Math.Round(System.Convert.ToDouble(hrvFlowrate) * 0.47195, 4).ToString()),
+                        new XAttribute("supplyFlowrate", Math.Round(System.Convert.ToDouble(hrvFlowrate) * 0.471947, 4).ToString()),
+                        new XAttribute("exhaustFlowrate", Math.Round(System.Convert.ToDouble(hrvFlowrate) * 0.47147, 4).ToString()),
                         new XAttribute("fanPower1", GetCellValue("General", "K4")),
                         new XAttribute("isDefaultFanpower", "false"),
                         new XAttribute("isEnergyStar", "false"),
@@ -344,8 +344,8 @@ namespace HotREF
                 {
                     hrv.Element("Hrv").Element("EquipmentInformation").Element("Manufacturer").SetValue(hrvMake);
                     hrv.Element("Hrv").Element("EquipmentInformation").Element("Model").SetValue(hrvModel);
-                    hrv.Element("Hrv").SetAttributeValue("supplyFlowrate", Math.Round(System.Convert.ToDouble(hrvFlowrate) * 0.47195, 4).ToString());
-                    hrv.Element("Hrv").SetAttributeValue("exhaustFlowrate", Math.Round(System.Convert.ToDouble(hrvFlowrate) * 0.47195, 4).ToString());
+                    hrv.Element("Hrv").SetAttributeValue("supplyFlowrate", Math.Round(System.Convert.ToDouble(hrvFlowrate) * 0.471947, 4).ToString());
+                    hrv.Element("Hrv").SetAttributeValue("exhaustFlowrate", Math.Round(System.Convert.ToDouble(hrvFlowrate) * 0.471947, 4).ToString());
                     hrv.Element("Hrv").SetAttributeValue("fanPower1", hrvPower1);
                     hrv.Element("Hrv").SetAttributeValue("fanPower2", hrvPower2);
                     hrv.Element("Hrv").SetAttributeValue("efficiency1", hrvSRE1);
@@ -430,7 +430,7 @@ namespace HotREF
 
                     default:
                         tankVolumeCode = "1";
-                        tankVolumeValue = GetCellValue("General", "O4");
+                        tankVolumeValue = Math.Round(System.Convert.ToDouble(GetCellValue("General", "O4")),4).ToString();
                         tankVolumeEng = "User specified";
                         tankVolumeFr = "Spécifié par l'utilisateur";
                         break;
@@ -473,7 +473,7 @@ namespace HotREF
 
             foreach (XElement infil in newHouse.Descendants("NaturalAirInfiltration"))
             {
-                infil.Element("Specifications").Element("House").SetAttributeValue("volume", Math.Round(System.Convert.ToDouble(GetCellValue("Calc", "Q49")) * 0.0283168, 3).ToString());
+                infil.Element("Specifications").Element("House").SetAttributeValue("volume", Math.Round(System.Convert.ToDouble(GetCellValue("Calc", "Q49")) * 0.02831684609, 4).ToString());
                 infil.Element("Specifications").Element("BuildingSite").SetAttributeValue("highestCeiling", Math.Round(System.Convert.ToDouble(GetCellValue("Calc", "M51")) * 0.3048, 4).ToString());
             }
 
@@ -520,6 +520,16 @@ namespace HotREF
                     ps.SetAttributeValue("code", "7");
                     ps.Element("English").SetValue("Other, 11 or more corners");
                     ps.Element("French").SetValue("Autre, 11 coins ou plus");
+                }
+            }
+            foreach(XElement houseType in newHouse.Descendants("HouseType"))
+            {
+                string partyBsmt = GetCellValue("Calc", "H2");
+                if (double.TryParse(partyBsmt, out double value) && value > 0)
+                {
+                        houseType.SetAttributeValue("code", "2");
+                        houseType.Element("English").SetValue("Double/Semi-detached");
+                        houseType.Element("French").SetValue("Double/semi-détaché");
                 }
             }
         }
@@ -648,7 +658,7 @@ namespace HotREF
         }
 
         //builds new walls that are required but not included in the template 
-        public XDocument NewWall(string name, string corners, string intersections, string height, string perim)
+        private XDocument NewWall(string name, string corners, string intersections, string height, string perim)
         {
             string heightMetric = Math.Round(System.Convert.ToDouble(height) * 0.3048, 4).ToString();
             string perimMetric = Math.Round(System.Convert.ToDouble(perim) * 0.3048, 4).ToString();
@@ -677,7 +687,7 @@ namespace HotREF
             return newHouse;
         }
 
-        public XDocument NewFloor(string name, string length, string area)
+        private XDocument NewFloor(string name, string length, string area)
         {
             string lengthMetric = Math.Round(System.Convert.ToDouble(length) * 0.3048, 4).ToString();
             string areaMetric = Math.Round(System.Convert.ToDouble(area) * 0.092903, 4).ToString();

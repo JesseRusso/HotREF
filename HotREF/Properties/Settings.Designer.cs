@@ -37,12 +37,13 @@ namespace HotREF.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        public global::System.Collections.ArrayList ZoneProfiles {
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string TemplateDir {
             get {
-                return ((global::System.Collections.ArrayList)(this["ZoneProfiles"]));
+                return ((string)(this["TemplateDir"]));
             }
             set {
-                this["ZoneProfiles"] = value;
+                this["TemplateDir"] = value;
             }
         }
     }

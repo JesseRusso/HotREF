@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml.Linq;
 using HotREF.Properties;
 
@@ -10,23 +7,23 @@ namespace HotREF
 {
     class Ceiling
     {
-        string ceilingName;
-        string lengthMetric;
-        string areaMetric;
-        string ceilingType;
-        string typeCode;
-        string typeEng;
-        string typeFr;
-        string heelHeight;
-        bool vaultCheck = false;
-        string ceilingSlope;
-        string slopeCode;
-        string slopeValue;
-        string slopeEng;
-        string slopeFr;
-        string slopeRise;
-        string slopeName = "";
-        string rValue;
+        private string ceilingName;
+        private string lengthMetric;
+        private string areaMetric;
+        private string ceilingType;
+        private string typeCode;
+        private string typeEng;
+        private string typeFr;
+        private string heelHeight;
+        private bool vaultCheck = false;
+        private string ceilingSlope;
+        private string slopeCode;
+        private string slopeValue;
+        private string slopeEng;
+        private string slopeFr;
+        private string slopeRise;
+        private string slopeName = "";
+        private string rValue;
 
         public Ceiling(string name, string type, string area, string length, string slope, string heel)
         {
@@ -156,7 +153,7 @@ namespace HotREF
                     slopeFr = "Spécifié par l'utilisateur";
                     break;
             }
-            if (System.Convert.ToInt32(ceilingSlope) > 7)
+            if (System.Convert.ToDouble(ceilingSlope) > 7)
             {
                 slopeCode = "0";
                 slopeValue = Math.Round(System.Convert.ToDouble(ceilingSlope)/12,4).ToString();

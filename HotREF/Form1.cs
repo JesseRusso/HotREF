@@ -1,5 +1,6 @@
 ﻿//Created by Jesse Russo 2019
 using System;
+using System.Diagnostics;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -8,6 +9,8 @@ using System.Xml.Linq;
 using System.Text;
 using System.Windows.Forms;
 using HotREF.Properties;
+using System.IO;
+
 namespace HotREF
 {
     public partial class Form1 : Form
@@ -23,6 +26,8 @@ namespace HotREF
         string doorSize;
         string excelFilePath;
         string zone = "7A";
+        private string proposedAddress;
+        private string directoryString;
          
 
         public Form1()
@@ -38,8 +43,15 @@ namespace HotREF
 
             if (ofd.ShowDialog() == DialogResult.OK)
             {
-                textBox1.Text = ofd.FileName;
                 propHouse = XDocument.Load(ofd.FileName);
+                directoryString = Path.GetDirectoryName(ofd.FileName);
+                string[] pathStrings = Path.GetFileName(ofd.FileName).Split('-');
+                for (int i = 0; i < pathStrings.Length; i++ ) 
+                {
+                    Debug.WriteLine(pathStrings[i]);
+                }
+                proposedAddress = pathStrings[0];
+                textBox1.Text = proposedAddress;
             }
             ofd.Dispose();
         }
@@ -96,6 +108,8 @@ namespace HotREF
             SaveFileDialog sfd = new SaveFileDialog();
             sfd.Filter = "House File|*.h2k";
             sfd.DefaultExt = "h2k";
+            sfd.InitialDirectory = directoryString;
+            sfd.FileName = $"{proposedAddress}-REFERENCE";
             if (sfd.ShowDialog() == DialogResult.OK)
             {
                 propHouse.Save(sfd.FileName);
@@ -143,6 +157,8 @@ namespace HotREF
             if (ofd.ShowDialog() == DialogResult.OK)
             {
                 excelFilePath = ofd.FileName.ToString();
+                string[] pathStrings = Path.GetFileName(ofd.FileName).Split('-');
+                proposedAddress = pathStrings[0];
             }
             ofd.Dispose();
         }
@@ -167,6 +183,9 @@ namespace HotREF
             SaveFileDialog sfd = new SaveFileDialog();
             sfd.Title = "Save Generated Proposed House";
             sfd.Filter = " H2K files (*.h2k)| *.h2k";
+            sfd.InitialDirectory = Path.GetDirectoryName(excelFilePath);
+            sfd.FileName = $"{proposedAddress}-PROPOSED";
+
             if (sfd.ShowDialog() == DialogResult.OK)
             {
                 template.Save(sfd.FileName);
@@ -179,6 +198,7 @@ namespace HotREF
             OpenFileDialog ofd = new OpenFileDialog();
             ofd.Title = "Select HOT2000 builder template";
             ofd.Filter = "House Files(*.h2k) | *.h2k";
+            ofd.InitialDirectory = Settings.Default.TemplateDir;
 
             if (ofd.ShowDialog() == DialogResult.OK)
             {
@@ -195,7 +215,18 @@ namespace HotREF
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
             Settings.Default.WindowLocation = this.Location;
-            Properties.Settings.Default.Save();
+            Settings.Default.Save();
+        }
+
+        private void TemplateDirectoryToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            FolderBrowserDialog fbd = new FolderBrowserDialog();
+            fbd.Description = "Choose default template directory";
+            if(fbd.ShowDialog() == DialogResult.OK)
+            {
+                Settings.Default.TemplateDir = fbd.SelectedPath;
+                Settings.Default.Save();
+            }
         }
     }
 }

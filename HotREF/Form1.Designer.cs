@@ -53,9 +53,13 @@
             this.ZoneSelectBox = new System.Windows.Forms.ComboBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.TemplateButton = new System.Windows.Forms.Button();
-            this.CreateProp = new System.Windows.Forms.Button();
+            this.CreatePropButton = new System.Windows.Forms.Button();
+            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.TemplateDirectoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
+            this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // openFileDialog1
@@ -66,7 +70,7 @@
             // 
             this.buttonExcel.Location = new System.Drawing.Point(6, 19);
             this.buttonExcel.Name = "buttonExcel";
-            this.buttonExcel.Size = new System.Drawing.Size(190, 23);
+            this.buttonExcel.Size = new System.Drawing.Size(324, 23);
             this.buttonExcel.TabIndex = 0;
             this.buttonExcel.Text = "Choose Worksheet";
             this.buttonExcel.UseVisualStyleBackColor = true;
@@ -85,13 +89,13 @@
             // textBox1
             // 
             this.textBox1.BackColor = System.Drawing.SystemColors.ButtonFace;
-            this.textBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.textBox1.Location = new System.Drawing.Point(19, 72);
+            this.textBox1.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.textBox1.Location = new System.Drawing.Point(18, 81);
             this.textBox1.Name = "textBox1";
             this.textBox1.ReadOnly = true;
-            this.textBox1.Size = new System.Drawing.Size(354, 20);
+            this.textBox1.Size = new System.Drawing.Size(228, 13);
             this.textBox1.TabIndex = 4;
-            this.textBox1.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.textBox1.Text = "No file selected";
             // 
             // createRefButton
             // 
@@ -107,7 +111,7 @@
             // button2
             // 
             this.button2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.button2.Location = new System.Drawing.Point(284, 379);
+            this.button2.Location = new System.Drawing.Point(241, 378);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(89, 23);
             this.button2.TabIndex = 13;
@@ -222,12 +226,11 @@
             // 
             // label4
             // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(19, 56);
+            this.label4.Location = new System.Drawing.Point(15, 59);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(96, 13);
-            this.label4.TabIndex = 18;
-            this.label4.Text = "Proposed File Path";
+            this.label4.Size = new System.Drawing.Size(100, 19);
+            this.label4.TabIndex = 1;
+            this.label4.Text = "Proposed File:";
             // 
             // groupBox1
             // 
@@ -251,7 +254,7 @@
             this.groupBox1.Controls.Add(this.selectFile);
             this.groupBox1.Location = new System.Drawing.Point(11, 223);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(382, 407);
+            this.groupBox1.Size = new System.Drawing.Size(336, 407);
             this.groupBox1.TabIndex = 20;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "REFERENCE";
@@ -262,21 +265,21 @@
             this.ZoneSelectBox.Items.AddRange(new object[] {
             "Zone 7A",
             "Zone 6"});
-            this.ZoneSelectBox.Location = new System.Drawing.Point(284, 21);
+            this.ZoneSelectBox.Location = new System.Drawing.Point(241, 19);
             this.ZoneSelectBox.Name = "ZoneSelectBox";
             this.ZoneSelectBox.Size = new System.Drawing.Size(89, 21);
-            this.ZoneSelectBox.TabIndex = 11;
+            this.ZoneSelectBox.TabIndex = 0;
             this.ZoneSelectBox.Text = "Zone 7A";
             this.ZoneSelectBox.SelectedIndexChanged += new System.EventHandler(this.ZoneSelectBox_SelectedIndexChanged);
             // 
             // groupBox2
             // 
             this.groupBox2.Controls.Add(this.TemplateButton);
-            this.groupBox2.Controls.Add(this.CreateProp);
+            this.groupBox2.Controls.Add(this.CreatePropButton);
             this.groupBox2.Controls.Add(this.buttonExcel);
-            this.groupBox2.Location = new System.Drawing.Point(11, 12);
+            this.groupBox2.Location = new System.Drawing.Point(11, 27);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(382, 205);
+            this.groupBox2.Size = new System.Drawing.Size(336, 190);
             this.groupBox2.TabIndex = 0;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "PROPOSED";
@@ -285,32 +288,59 @@
             // 
             this.TemplateButton.Location = new System.Drawing.Point(6, 68);
             this.TemplateButton.Name = "TemplateButton";
-            this.TemplateButton.Size = new System.Drawing.Size(190, 23);
+            this.TemplateButton.Size = new System.Drawing.Size(324, 23);
             this.TemplateButton.TabIndex = 1;
             this.TemplateButton.Text = "Choose Template";
             this.TemplateButton.UseVisualStyleBackColor = true;
             this.TemplateButton.Click += new System.EventHandler(this.TemplateButton_Click);
             // 
-            // CreateProp
+            // CreatePropButton
             // 
-            this.CreateProp.Location = new System.Drawing.Point(6, 151);
-            this.CreateProp.Name = "CreateProp";
-            this.CreateProp.Size = new System.Drawing.Size(190, 23);
-            this.CreateProp.TabIndex = 2;
-            this.CreateProp.Text = "Create Proposed Template";
-            this.CreateProp.UseVisualStyleBackColor = true;
-            this.CreateProp.Click += new System.EventHandler(this.CreateProp_Click);
+            this.CreatePropButton.Location = new System.Drawing.Point(6, 161);
+            this.CreatePropButton.Name = "CreatePropButton";
+            this.CreatePropButton.Size = new System.Drawing.Size(324, 23);
+            this.CreatePropButton.TabIndex = 2;
+            this.CreatePropButton.Text = "Create House From Template";
+            this.CreatePropButton.UseVisualStyleBackColor = true;
+            this.CreatePropButton.Click += new System.EventHandler(this.CreateProp_Click);
+            // 
+            // menuStrip1
+            // 
+            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.settingsToolStripMenuItem});
+            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
+            this.menuStrip1.Name = "menuStrip1";
+            this.menuStrip1.Size = new System.Drawing.Size(359, 24);
+            this.menuStrip1.TabIndex = 21;
+            this.menuStrip1.Text = "menuStrip1";
+            // 
+            // settingsToolStripMenuItem
+            // 
+            this.settingsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.TemplateDirectoryToolStripMenuItem});
+            this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
+            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
+            this.settingsToolStripMenuItem.Text = "Settings";
+            // 
+            // TemplateDirectoryToolStripMenuItem
+            // 
+            this.TemplateDirectoryToolStripMenuItem.Name = "TemplateDirectoryToolStripMenuItem";
+            this.TemplateDirectoryToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
+            this.TemplateDirectoryToolStripMenuItem.Text = "Default template directory";
+            this.TemplateDirectoryToolStripMenuItem.Click += new System.EventHandler(this.TemplateDirectoryToolStripMenuItem_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
-            this.ClientSize = new System.Drawing.Size(405, 639);
+            this.ClientSize = new System.Drawing.Size(359, 639);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
+            this.Controls.Add(this.menuStrip1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MainMenuStrip = this.menuStrip1;
             this.MaximizeBox = false;
             this.MinimumSize = new System.Drawing.Size(365, 453);
             this.Name = "Form1";
@@ -321,7 +351,10 @@
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
+            this.menuStrip1.ResumeLayout(false);
+            this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -348,9 +381,12 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.GroupBox groupBox2;
-        private System.Windows.Forms.Button CreateProp;
+        private System.Windows.Forms.Button CreatePropButton;
         private System.Windows.Forms.Button TemplateButton;
         private System.Windows.Forms.ComboBox ZoneSelectBox;
+        private System.Windows.Forms.MenuStrip menuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem TemplateDirectoryToolStripMenuItem;
     }
 }
 
