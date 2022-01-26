@@ -1,8 +1,9 @@
-﻿using DocumentFormat.OpenXml.Packaging;
+﻿//Created by Jesse Russo 2021
+using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
+using System.Text.RegularExpressions;
 using System;
 using System.IO;
-using System.Text;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
@@ -29,11 +30,8 @@ namespace HotREF
             newHouse = template;
             GetBuilder();
         }
-
-        /// <summary>
-        /// Finds the largest component ID in the template and stores it to increment from
-        /// </summary>
-        /// <param name="newHouse"></param>
+ 
+        //Finds the largest component ID in the template and stores it to increment from
         public void FindID(XDocument newHouse)
         {
             List<string> ids = new List<string>();
@@ -50,6 +48,7 @@ namespace HotREF
             maxID = idList.Max() + 1;
             ids.Clear();
         }
+        //This method gets the builder name 
         private void GetBuilder()
         {
             string builderName = (from el in newHouse.Descendants("File").Descendants("BuilderName")
@@ -185,7 +184,7 @@ namespace HotREF
             over4.Element("Components").Element("FloorHeader").Element("Measurements").SetAttributeValue("height", Math.Round(System.Convert.ToDouble(GetCellValue("Calc", "K38")) * 0.3048, 4));
             over4.Element("Components").Element("FloorHeader").Element("Measurements").SetAttributeValue("perimeter", Math.Round(System.Convert.ToDouble(GetCellValue("Calc", "L38")) * 0.3048, 4));
 
-            if (System.Convert.ToDouble(GetCellValue("Calc", "I38")) > 1D)
+            if (System.Convert.ToDouble(GetCellValue("Calc", "I38")) > 1D || bsmtUnder4Feet)
             {
                 over4.Element("Wall").SetAttributeValue("hasPonyWall", "true");
                 over4.Element("Wall").Element("Measurements").SetAttributeValue("ponyWallHeight", Math.Round(System.Convert.ToDouble(GetCellValue("Calc", "I38")) * 0.3048, 4));
@@ -226,7 +225,6 @@ namespace HotREF
                 under4.Element("Wall").Element("Construction").SetAttributeValue("corners", GetCellValue("Calc", "J39"));
                 under4.Element("Components").Element("FloorHeader").Element("Measurements").SetAttributeValue("height", Math.Round(System.Convert.ToDouble(GetCellValue("Calc", "K39")) * 0.3048, 4));
                 under4.Element("Components").Element("FloorHeader").Element("Measurements").SetAttributeValue("perimeter", Math.Round(System.Convert.ToDouble(GetCellValue("Calc", "L39")) * 0.3048, 4));
-
                 under4.Element("Wall").SetAttributeValue("hasPonyWall", "true");
                 under4.Element("Wall").Element("Measurements").SetAttributeValue("ponyWallHeight", Math.Round(System.Convert.ToDouble(GetCellValue("Calc", "I39")) * 0.3048, 4));
             }
@@ -304,7 +302,7 @@ namespace HotREF
         {
             ChangeHRV();
             ChangeFurnace();
-            ChangeTank();
+            //ChangeTank();
         }
         private void ChangeHRV()
         {
@@ -325,7 +323,7 @@ namespace HotREF
                     vent.Add(
                         new XElement("BaseVentilator",
                         new XAttribute("supplyFlowrate", Math.Round(System.Convert.ToDouble(hrvFlowrate) * 0.471947, 4).ToString()),
-                        new XAttribute("exhaustFlowrate", Math.Round(System.Convert.ToDouble(hrvFlowrate) * 0.47147, 4).ToString()),
+                        new XAttribute("exhaustFlowrate", Math.Round(System.Convert.ToDouble(hrvFlowrate) * 0.471947, 4).ToString()),
                         new XAttribute("fanPower1", GetCellValue("General", "K4")),
                         new XAttribute("isDefaultFanpower", "false"),
                         new XAttribute("isEnergyStar", "false"),
@@ -378,77 +376,48 @@ namespace HotREF
             }
 
         }
-        private void ChangeTank()
+        public void GasDHW()
         {
-            string dhwMake = GetCellValue("Summary", "J74");
-            string dhwModel = GetCellValue("Summary", "K74");
-            string dhwSize = GetCellValue("Summary", "K75");
-            string dhwEF = GetCellValue("Summary", "K77");
-
             foreach (XElement tank in newHouse.Descendants("Components").Descendants("HotWater"))
             {
-                string tankVolumeCode;
-                string tankVolumeValue;
-                string tankVolumeEng;
-                string tankVolumeFr;
-                string tankTypeCode = null;
-                string tankTypeEng = "Direct vent (sealed)";
-                string tankTypeFr = "à évacuation directe (scellé)";
+                tank.Element("Primary").DescendantsAndSelf().Remove();
+            }
+            bool isPrimary = true; 
+            if(System.Convert.ToDouble(GetCellValue("General", "P4")) > 0)
+            {
+                string dhwMake = GetCellValue("Summary", "J74");
+                string dhwModel = GetCellValue("Summary", "K74");
+                string dhwSize = GetCellValue("Summary", "K75");
+                string dhwEF = GetCellValue("Summary", "K77");
 
-                switch (dhwSize)
+                
+                WaterHeater tank = new WaterHeater(dhwMake, dhwModel, dhwEF, dhwSize, false, isPrimary);
+                tank.AddTank();
+            }
+        }
+        public void ElectricDHW()
+        { 
+            bool isPrimary = false;
+            if (System.Convert.ToDouble(GetCellValue("General", "G32")) > 0)
+            {
+                if (System.Convert.ToDouble(GetCellValue("General", "P4")) <= 0)
                 {
-                    case "0":
-                        tankTypeCode = "12";
-                        tankTypeEng = "Instantaneous (condensing)";
-                        tankTypeFr = "Instantané (à condensation)";
-                        tankVolumeCode = "7";
-                        tankVolumeValue = "0";
-                        tankVolumeEng = "Not applicable";
-                        tankVolumeFr = "Sans objet";
-                        break;
-
-                    case "50":
-                        tankVolumeCode = "4";
-                        tankVolumeValue = "189.3001";
-                        tankVolumeEng = "189.3 L, 41.6 Imp, 50 US gal";
-                        tankVolumeFr = "189.3 L, 41.6 imp, 50 gal ÉU";
-                        break;
-
-                    case "65":
-                        tankVolumeCode = "5";
-                        tankVolumeValue = "246.0999";
-                        tankVolumeEng = "246.1 L, 54.1 Imp, 65 US gal";
-                        tankVolumeFr = "246.1 L, 54.1 imp, 65 gal ÉU";
-                        break;
-
-                    case "80":
-                        tankVolumeCode = "6";
-                        tankVolumeValue = "302.8";
-                        tankVolumeEng = "302.8 L, 66.6 Imp, 80 US gal";
-                        tankVolumeFr = "302.8 L, 66.6 imp, 80 gal ÉU";
-                        break;
-
-                    default:
-                        tankVolumeCode = "1";
-                        tankVolumeValue = Math.Round(System.Convert.ToDouble(GetCellValue("General", "O4")),4).ToString();
-                        tankVolumeEng = "User specified";
-                        tankVolumeFr = "Spécifié par l'utilisateur";
-                        break;
+                    isPrimary = true;
                 }
-                tank.Element("Primary").Element("EquipmentInformation").Element("Model").SetValue(dhwModel);
-                tank.Element("Primary").Element("EquipmentInformation").Element("Manufacturer").SetValue(dhwMake);
-                tank.Element("Primary").Element("TankVolume").SetAttributeValue("code", tankVolumeCode);
-                tank.Element("Primary").Element("TankVolume").SetAttributeValue("value", tankVolumeValue);
-                tank.Element("Primary").Element("TankVolume").Element("English").SetValue(tankVolumeEng);
-                tank.Element("Primary").Element("TankVolume").Element("French").SetValue(tankVolumeFr);
-                tank.Element("Primary").Element("EnergyFactor").SetAttributeValue("value", dhwEF);
+                string electricTankMake = GetCellValue("Summary", "L74");
+                string electricTankModel = GetCellValue("Summary", "M74");
+                string electricTankVolume = GetCellValue("Summary", "M75");
+                string electricTankEF = GetCellValue("Summary", "M77");
 
-                if (tankTypeCode != null)
-                {
-                    tank.Element("Primary").Element("TankType").SetAttributeValue("code", tankTypeCode);
-                    tank.Element("Primary").Element("TankType").Element("English").SetValue(tankTypeEng);
-                    tank.Element("Primary").Element("TankType").Element("French").SetValue(tankTypeFr);
-                }
+                WaterHeater tank = new WaterHeater(electricTankMake, electricTankModel, electricTankEF, electricTankVolume, true, isPrimary);
+                tank.AddTank();
+            }   
+        }
+        public void ChangeAddress(string address)
+        {
+            foreach(XElement add in newHouse.Descendants("Client").Descendants("StreetAddress"))
+            {
+                add.Element("Street").SetValue(CamelCaseToSpaceSeparated(address));
             }
         }
         //Changes values in specifications screen along with the house volume and highest ceiling height
@@ -484,7 +453,6 @@ namespace HotREF
             corners.Add(GetCellValue("Calc", "F4"));
 
             corners.RemoveAll(Value => Value == null);
-
             List<int> shape = new List<int>(corners.Select(s => int.Parse(s)).ToList());
             int maxCorners = shape.Max();
             corners.Clear();
@@ -733,7 +701,6 @@ namespace HotREF
                     intersections = GetCellValue("Calc", "F" + currentRow);
 
                     NewWall(name, corners, intersections, height, perim);
-
                 }
                 currentRow++;
             }
@@ -781,7 +748,8 @@ namespace HotREF
             return newHouse;
         }
 
-        //Method to get the value of single cells from worksheet
+        //Method to get the value of single cells from Excel worksheet
+        //Should probably fix this so that the file only opens once
         public string GetCellValue(string sheetName, string refCell)
         {
             string value = null;
@@ -847,6 +815,14 @@ namespace HotREF
                 }
             }
             return value;
+        }
+        static string CamelCaseToSpaceSeparated(string text)
+        {
+            string[] words = Regex.Matches(text, @"([A-Z]+(?![a-z])|[A-Z][a-z]+|[0-9]+|[a-z]+)")
+                .OfType<Match>()
+                .Select(m => m.Value)
+                .ToArray();
+            return string.Join(" ", words);
         }
 
     }

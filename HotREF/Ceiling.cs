@@ -148,7 +148,7 @@ namespace HotREF
                     break;
                 default:
                     slopeCode = "0";
-                    slopeValue = "0.6667";
+                    slopeValue = Math.Round(System.Convert.ToDouble(ceilingSlope) / 12, 4).ToString();
                     slopeEng = "User specified";
                     slopeFr = "Spécifié par l'utilisateur";
                     break;
@@ -164,19 +164,20 @@ namespace HotREF
 
         public void AddCeiling()
         {
-            if (CreateProp.ceilingCount > 1)
+            if (CreateProp.ceilingCount > 1 && ceilingName.Contains("2nd"))
             {
                 slopeName = ceilingSlope + "/12";
-                if (this.slopeCode.Equals("1"))
-                {
-                    slopeName = "Flat";
-                }
+ 
+            }
+            if (this.slopeCode.Equals("1"))
+            {
+                slopeName = "Flat";
             }
             if (vaultCheck)
             {
                 slopeName = "";
             }
-            XElement comp = (XElement)(from el in CreateProp.newHouse.Descendants("Components")
+            XElement comp = (from el in CreateProp.newHouse.Descendants("Components")
                                        select el).First();
             comp.Add(
                 new XElement("Ceiling",

@@ -17,19 +17,12 @@ namespace HotREF
     {
         XDocument propHouse;
         XDocument template;
-
-        string tankEF = "0.58";
-        string furnaceOutput;
-        string fanPower = "125.3";
-        string ventilation = "57.2";
-        string windowSize;
-        string doorSize;
         string excelFilePath;
         string zone = "7A";
         private string proposedAddress;
         private string directoryString;
+        public string excelPath { get; private set; }
          
-
         public Form1()
         {
             InitializeComponent();
@@ -46,11 +39,19 @@ namespace HotREF
                 propHouse = XDocument.Load(ofd.FileName);
                 directoryString = Path.GetDirectoryName(ofd.FileName);
                 string[] pathStrings = Path.GetFileName(ofd.FileName).Split('-');
-                for (int i = 0; i < pathStrings.Length; i++ ) 
+
+                if(pathStrings.Length > 2)
                 {
-                    Debug.WriteLine(pathStrings[i]);
+                    proposedAddress = pathStrings[0];
+                    for(int i = 1; i < pathStrings.Length-1; i++)
+                    {
+                        proposedAddress += $"-{pathStrings[i]}";
+                    }
                 }
-                proposedAddress = pathStrings[0];
+                else
+                {
+                    proposedAddress = pathStrings[0];
+                }
                 textBox1.Text = proposedAddress;
             }
             ofd.Dispose();
@@ -63,48 +64,19 @@ namespace HotREF
 
         private void Button1_Click(object sender, EventArgs e)
         {
-            if (furnaceOutput == null)
-            {
-                MessageBox.Show("Please enter a value for furnace output", "Furnace output empty");
-            }
-            else if (windowSize == null)
-            {
-                MessageBox.Show("", "Window size required");
-            }
-            else if (tankEF == null)
-            {
-                MessageBox.Show("Please enter a value for tank EF", "Tank EF empty");
-            }
-            else if (fanPower == null)
-            {
-                MessageBox.Show("Please enter a value for fan power", "Fan power empty");
-            }
-            else if (propHouse == null)
-            {
-                MessageBox.Show("House File must be selected", "No house file");
-            }
-            else if (ventilation == null)
-            {
-                MessageBox.Show("Please enter a value for ventilation", "Ventilation empty");
-            }
-            else
-            {
-                CreateRef cr = new CreateRef(propHouse,zone);
-                cr.FindID(propHouse);
-                propHouse = cr.Remover(propHouse);
-                propHouse = cr.AddCode(propHouse);
-                propHouse = cr.RChanger(propHouse);
-                propHouse = cr.HvacChanger(propHouse, furnaceOutput);
-                propHouse = cr.AddHrv(propHouse, ventilation, fanPower);
-                propHouse = cr.Doors(propHouse, doorSize);
-                propHouse = cr.Windows(propHouse, windowSize);
-                propHouse = cr.HotWater(propHouse, tankEF);
+            CreateRef cr = new CreateRef(propHouse,zone,excelFilePath);
+            cr.FindID(propHouse);
+            propHouse = cr.Remover(propHouse);
+            propHouse = cr.AddCode(propHouse);
+            propHouse = cr.RChanger(propHouse);
+            propHouse = cr.HvacChanger(propHouse);
+            propHouse = cr.AddFan(propHouse);
+            propHouse = cr.Doors(propHouse);
+            propHouse = cr.Windows(propHouse);
+            propHouse = cr.HotWater(propHouse);
 
-                MessageBox.Show("Please save and check results", "REF changes made");
-            }
-        }
-        private void Button2_Click(object sender, EventArgs e)
-        {
+            MessageBox.Show("Please save and check results", "REF changes made");
+
             SaveFileDialog sfd = new SaveFileDialog();
             sfd.Filter = "House File|*.h2k";
             sfd.DefaultExt = "h2k";
@@ -117,52 +89,37 @@ namespace HotREF
             sfd.Dispose();
         }
 
-        private void TextBox8_TextChanged(object sender, EventArgs e)
-        {
-            tankEF = textBox8.Text;
-        }
-
-        private void TextBox3_TextChanged(object sender, EventArgs e)
-        {
-            windowSize = textBox3.Text;
-        }
-
-        private void TextBox4_TextChanged(object sender, EventArgs e)
-        {
-            furnaceOutput = textBox4.Text;
-        }
-
-        private void TextBox7_TextChanged(object sender, EventArgs e)
-        {
-            fanPower = textBox7.Text;
-        }
-
-        private void TextBox6_TextChanged(object sender, EventArgs e)
-        {
-            ventilation = textBox6.Text;
-        }
-
-        private void TextBox2_TextChanged(object sender, EventArgs e)
-        {
-            doorSize = textBox2.Text;
-        }
-
         private void Button1_Click_1(object sender, EventArgs e)
         {
-
+            string excelAddress;
             OpenFileDialog ofd = new OpenFileDialog();
             ofd.Title = "Select worksheet";
             ofd.Filter = "Excel Files (*.xlsm) | *.xlsm";
 
             if (ofd.ShowDialog() == DialogResult.OK)
             {
+                worksheetTextBox.Clear();
                 excelFilePath = ofd.FileName.ToString();
                 string[] pathStrings = Path.GetFileName(ofd.FileName).Split('-');
-                proposedAddress = pathStrings[0];
+
+                if (pathStrings.Length > 2)
+                {
+                    excelAddress = pathStrings[0];
+                    for (int i = 1; i < pathStrings.Length - 1; i++)
+                    {
+                        excelAddress += $"-{pathStrings[i]}";
+                    }
+                }
+                else
+                {
+                    excelAddress = pathStrings[0];
+                }
+                excelPath = excelFilePath;
+                worksheetTextBox.Text = excelAddress;
+                proposedAddress = excelAddress;
             }
             ofd.Dispose();
         }
-
 
         private void CreateProp_Click(object sender, EventArgs e)
         {
@@ -171,6 +128,7 @@ namespace HotREF
             cp.FindID(template);
             cp.ChangeEquipment();
             cp.ChangeSpecs();
+            cp.ChangeAddress(proposedAddress);
             cp.ChangeWalls();
             cp.CheckCeilings();
             cp.ChangeFloors();
@@ -179,6 +137,8 @@ namespace HotREF
             cp.CheckVaults();
             cp.ExtraWalls();
             cp.ChangeBasment();
+            cp.GasDHW();
+            cp.ElectricDHW();
 
             SaveFileDialog sfd = new SaveFileDialog();
             sfd.Title = "Save Generated Proposed House";

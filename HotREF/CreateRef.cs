@@ -3,27 +3,31 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
+using DocumentFormat.OpenXml.Packaging;
+using DocumentFormat.OpenXml.Spreadsheet;
+using System.IO;
 
 
 namespace HotREF
 {
     class CreateRef
     {
-        string ceilingRValue = "10.4292";
-        string wallRValue = "3.0802";
-        string garWallRValue = "2.9199";
-        string bsmtWallRValue = "3.3443";
-        string floorRValue = "5.0191";
-        string garFloorRValue = "4.8589";
-        string furnaceEF = "92";
-        string slabRValue = "1.902";
-        string windowRValue = "0.6252";
-        string doorRValue = "0.6252";
-        string weatherZone = "7A";
-        int maxID;
-        int codeID = 3;
+        private string ceilingRValue = "10.4292";
+        private string wallRValue = "3.0802";
+        private string garWallRValue = "2.9199";
+        private string bsmtWallRValue = "3.3443";
+        private string floorRValue = "5.0191";
+        private string garFloorRValue = "4.8589";
+        private string furnaceEF = "92";
+        private string slabRValue = "1.902";
+        private string windowRValue = "0.6252";
+        private string doorRValue = "0.6252";
+        private string weatherZone = "7A";
+        private int maxID;
+        private int codeID = 3;
+        private string excelFilePath;
 
-        public CreateRef(XDocument house, string zone)
+        public CreateRef(XDocument house, string zone, string excelPath)
         {
             List<char> codeIDs = new List<char>();
             var hasCode = from el in house.Descendants("Codes").Descendants().Attributes("id")
@@ -35,6 +39,7 @@ namespace HotREF
             }
             weatherZone = zone;
             SetZone();
+            excelFilePath = excelPath;
         }
 
         private void SetZone()
@@ -101,7 +106,7 @@ namespace HotREF
             {
                 //Check for garage walls
                 foreach (XElement type in wall.Descendants("Type"))
-                    if (wall.Element("Label").Value.ToString().Contains("Garage"))
+                    if (wall.Element("Label").Value.ToString().ToLower().Contains("garage"))
                     {
                         //If wall is a garage wall
                         type.SetAttributeValue("rValue", garWallRValue);
@@ -148,13 +153,13 @@ namespace HotREF
             }
 
             // Set R value for exposed floors
+            string GarFloorName = GetCellValue("Calc", "L21");
             foreach (XElement floor in house.Descendants("Floor"))
             {
-                double area = System.Convert.ToDouble(floor.Element("Measurements").Attribute("area").Value.ToString());
                 foreach (XElement type in floor.Descendants("Type"))
                 {
-                    //Check if floor is over 107sq ft. If so set as ExpGar R value
-                    if (area > 10)
+                    //Check for garage floor
+                    if (floor.Element("Label").Value == GarFloorName)
                     {
                         type.SetAttributeValue("rValue", garFloorRValue);
                     }
@@ -167,19 +172,18 @@ namespace HotREF
             return house;
         }
         //Changes values for furnace capacity, furnace EF, ACH, and DHW EF
-        public XDocument HvacChanger(XDocument house, string furnaceOutput)
+        public XDocument HvacChanger(XDocument house)
         {
             //Convert BTUs/h entered to KW
-            double btus = System.Convert.ToDouble(furnaceOutput);
+            double btus = System.Convert.ToDouble(GetCellValue("General", "C6"));
             btus = Math.Round((btus * 0.00029307107), 5);
-            furnaceOutput = btus.ToString();
 
             // Changes furnace output capacity and EF values
             foreach (XElement furnace in house.Descendants("Furnace").Descendants("Specifications"))
             {
                     furnace.SetAttributeValue("efficiency", furnaceEF);
                     furnace.SetAttributeValue("isSteadyState", "false");
-                    furnace.Element("OutputCapacity").SetAttributeValue("value", furnaceOutput);   
+                    furnace.Element("OutputCapacity").SetAttributeValue("value", btus.ToString());   
             }
             //Changes blower door test value to 2.5
             foreach(XElement bt in house.Descendants("BlowerTest"))
@@ -194,7 +198,7 @@ namespace HotREF
             return house;
         }
 
-        public XDocument HotWater(XDocument house, string tankEF)
+        public XDocument HotWater(XDocument house)
         {
             //Changes DHW tank EF value
             foreach (XElement tank in house.Descendants("HotWater").Descendants("Primary"))
@@ -205,33 +209,53 @@ namespace HotREF
                     tank.SetAttributeValue("flueDiameter", "0");
                     tank.Element("TankType").SetAttributeValue("code", "9");
                     tank.Element("TankVolume").SetAttributeValue("code", "4");
-                    tank.Element("EnergyFactor").SetAttributeValue("value", tankEF);
+                    tank.Element("EnergyFactor").SetAttributeValue("value", Math.Round(System.Convert.ToDouble(GetCellValue("General", "P5")),2));
+                }
+                else if(tank.Element("EnergySource").Attribute("code").Value == "1")
+                {
+                    tank.Element("EnergyFactor").SetAttributeValue("value", GetCellValue("General", "J31"));
                 }
                 else
                 {
                     foreach (XElement ef in tank.Descendants("EnergyFactor"))
                     {
-                        ef.SetAttributeValue("value", tankEF);
+                        ef.SetAttributeValue("value", Math.Round(System.Convert.ToDouble(GetCellValue("General", "P5")), 2));
                     }
                 }
-            }            
+            } 
+            foreach(XElement tank in house.Descendants("HotWater").Descendants("Secondary"))
+            {
+                if (tank.Element("TankType").Element("English").Value.ToString().Equals("Instantaneous (condensing)"))
+                {
+                    tank.SetAttributeValue("flueDiameter", "0");
+                    tank.Element("TankType").SetAttributeValue("code", "9");
+                    tank.Element("TankVolume").SetAttributeValue("code", "4");
+                    tank.Element("EnergyFactor").SetAttributeValue("value", Math.Round(System.Convert.ToDouble(GetCellValue("General", "P5")), 2));
+                }
+                if (tank.Element("EnergySource").Attribute("code").Value == "1")
+                {
+                    tank.Element("EnergyFactor").SetAttributeValue("value", GetCellValue("General", "J31"));
+                }
+                else
+                {
+                    tank.Element("EnergyFactor").SetAttributeValue("value", Math.Round(System.Convert.ToDouble(GetCellValue("General", "P5")),2));
+                }
+            }
             return house;
         }
 
         //Adds utility ventilation element and fills values for vent rate and fan power
-        public XDocument AddHrv(XDocument house, string ventilation, string fanPower)
+        public XDocument AddFan(XDocument house)
         {
             foreach (XElement vent in house.Descendants("WholeHouseVentilatorList"))
             {
-                double ls = System.Convert.ToDouble(ventilation);
-                ls = Math.Round((ls * 0.47195), 4);
-                ventilation = ls.ToString();
+                double ls = Math.Round(System.Convert.ToDouble(GetCellValue("General", "H4")) * 0.47195,4);
 
                 vent.Add(
                     new XElement("BaseVentilator",
-                    new XAttribute("supplyFlowrate", ventilation),
-                    new XAttribute("exhaustFlowrate", ventilation),
-                    new XAttribute("fanPower1", fanPower),
+                    new XAttribute("supplyFlowrate", ls.ToString()),
+                    new XAttribute("exhaustFlowrate", ls.ToString()),
+                    new XAttribute("fanPower1", GetCellValue("General", "K4").ToString()),
                     new XAttribute("isDefaultFanpower", "false"),
                     new XAttribute("isEnergyStar", "false"),
                     new XAttribute("isHomeVentilatingInstituteCertified", "false"),
@@ -245,9 +269,9 @@ namespace HotREF
             return house;
         }
 
-        public XDocument Doors(XDocument house, string doorSize)
+        public XDocument Doors(XDocument house)
         {
-            double width = Math.Round((System.Convert.ToDouble(doorSize) * 0.0254), 4);
+            double width = Math.Round((System.Convert.ToDouble(GetCellValue("General", "N10")) * 0.0254), 4);
             string ff = "1st Flr";
             foreach (XElement wall in house.Descendants("Wall"))
             {
@@ -283,9 +307,9 @@ namespace HotREF
             return house;
         }
 
-        public XDocument Windows(XDocument house, string windowSize)
+        public XDocument Windows(XDocument house)
         {
-            double size = Math.Round((System.Convert.ToDouble(windowSize) * 25.4), 6);
+            double size = Math.Round((System.Convert.ToDouble(GetCellValue("General", "N9")) * 25.4), 6);
             string floors = "2nd Flr";
             List<string> wallList = new List<string>();
 
@@ -473,6 +497,73 @@ namespace HotREF
                                             new XAttribute("frame", windowRValue))))))));
                 }
             return house;
+        }
+        //Method to get the value of single cells from worksheet
+        public string GetCellValue(string sheetName, string refCell)
+        {
+            string value = null;
+
+            using (FileStream fs = new FileStream(excelFilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+            {
+                using (SpreadsheetDocument spreadsheet = SpreadsheetDocument.Open(fs, false))
+                {
+                    WorkbookPart wbPart = spreadsheet.WorkbookPart;
+                    Sheet theSheet = (Sheet)wbPart.Workbook.Descendants<Sheet>().
+
+                        Where(s => s.Name == sheetName).FirstOrDefault();
+
+                    if (theSheet == null)
+                    {
+                        throw new ArgumentException("sheetName");
+                    }
+                    WorksheetPart wsPart = (WorksheetPart)(wbPart.GetPartById(theSheet.Id));
+
+                    Cell theCell = wsPart.Worksheet.Descendants<Cell>().
+                        Where(c => c.CellReference == refCell).FirstOrDefault();
+
+                    if (theCell.CellValue != null)
+                    {
+                        value = theCell.CellValue.InnerText;
+
+                        if (theCell.DataType != null)
+                        {
+                            switch (theCell.DataType.Value)
+                            {
+                                case CellValues.SharedString:
+
+                                    var stringTable = wbPart.GetPartsOfType<SharedStringTablePart>().FirstOrDefault();
+
+                                    if (stringTable != null)
+                                    {
+                                        value = stringTable.SharedStringTable.ElementAt(int.Parse(value)).InnerText;
+                                    }
+                                    break;
+
+                                case CellValues.Boolean:
+                                    switch (value)
+                                    {
+                                        case "0":
+                                            value = "FALSE";
+                                            break;
+                                        case "1":
+                                            value = "TRUE";
+                                            break;
+                                    }
+                                    break;
+
+                                case CellValues.String:
+                                    value = theCell.LastChild.InnerText;
+                                    break;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        value = null;
+                    }
+                }
+            }
+            return value;
         }
     }
 }
