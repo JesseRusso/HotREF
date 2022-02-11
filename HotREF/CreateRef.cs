@@ -12,7 +12,7 @@ namespace HotREF
 {
     class CreateRef
     {
-        private string ceilingRValue = "10.4292";
+        private string CeilingRValue { get; set; } = "10.4292";
         private string wallRValue = "3.0802";
         private string garWallRValue = "2.9199";
         private string bsmtWallRValue = "3.3443";
@@ -23,15 +23,18 @@ namespace HotREF
         private string windowRValue = "0.6252";
         private string doorRValue = "0.6252";
         private string weatherZone = "7A";
+        private string acSeer = "14.5";
+        private string heatedSlab = "15.8";
+        private string ACH = "2.5";
         private int maxID;
         private int codeID = 3;
-        private string excelFilePath;
+        private string ExcelFilePath {get; set;}
 
         public CreateRef(XDocument house, string zone, string excelPath)
         {
             List<char> codeIDs = new List<char>();
             var hasCode = from el in house.Descendants("Codes").Descendants().Attributes("id")
-                          select el;
+                          select el.Value;
 
             foreach(string code in hasCode)
             {
@@ -39,16 +42,17 @@ namespace HotREF
             }
             weatherZone = zone;
             SetZone();
-            excelFilePath = excelPath;
+            ExcelFilePath = excelPath;
         }
 
         private void SetZone()
         {
             if (weatherZone.Equals("Zone 6"))
             {
-                ceilingRValue = "8.6699";
+                CeilingRValue = "8.6699";
                 floorRValue = "4.6704";
                 bsmtWallRValue = "2.8636";
+                heatedSlab = "2.78254";
             }
         }
 
@@ -97,7 +101,7 @@ namespace HotREF
                     }
                     else
                     {
-                        ceiling.Element("Construction").Element("CeilingType").SetAttributeValue("rValue", ceilingRValue);
+                        ceiling.Element("Construction").Element("CeilingType").SetAttributeValue("rValue", CeilingRValue);
                     }
                 }
             }
@@ -174,8 +178,8 @@ namespace HotREF
         //Changes values for furnace capacity, furnace EF, ACH, and DHW EF
         public XDocument HvacChanger(XDocument house)
         {
-            //Convert BTUs/h entered to KW
-            double btus = System.Convert.ToDouble(GetCellValue("General", "C6"));
+            //Convert BTUs/h to KW
+            double btus = Convert.ToDouble(GetCellValue("General", "C6"));
             btus = Math.Round((btus * 0.00029307107), 5);
 
             // Changes furnace output capacity and EF values
@@ -188,12 +192,12 @@ namespace HotREF
             //Changes blower door test value to 2.5
             foreach(XElement bt in house.Descendants("BlowerTest"))
             {
-                bt.SetAttributeValue("airChangeRate", "2.5");
+                bt.SetAttributeValue("airChangeRate", ACH);
             }
             //Changes A/C SEER
             foreach (XElement ac in house.Descendants("AirConditioning").Descendants("Efficiency"))
             {
-                ac.SetAttributeValue("value", "14.5");
+                ac.SetAttributeValue("value", acSeer);
             }
             return house;
         }
@@ -209,7 +213,7 @@ namespace HotREF
                     tank.SetAttributeValue("flueDiameter", "0");
                     tank.Element("TankType").SetAttributeValue("code", "9");
                     tank.Element("TankVolume").SetAttributeValue("code", "4");
-                    tank.Element("EnergyFactor").SetAttributeValue("value", Math.Round(System.Convert.ToDouble(GetCellValue("General", "P5")),2));
+                    tank.Element("EnergyFactor").SetAttributeValue("value", Math.Round(Convert.ToDouble(GetCellValue("General", "P5")),2));
                 }
                 else if(tank.Element("EnergySource").Attribute("code").Value == "1")
                 {
@@ -219,7 +223,7 @@ namespace HotREF
                 {
                     foreach (XElement ef in tank.Descendants("EnergyFactor"))
                     {
-                        ef.SetAttributeValue("value", Math.Round(System.Convert.ToDouble(GetCellValue("General", "P5")), 2));
+                        ef.SetAttributeValue("value", Math.Round(Convert.ToDouble(GetCellValue("General", "P5")), 2));
                     }
                 }
             } 
@@ -230,7 +234,7 @@ namespace HotREF
                     tank.SetAttributeValue("flueDiameter", "0");
                     tank.Element("TankType").SetAttributeValue("code", "9");
                     tank.Element("TankVolume").SetAttributeValue("code", "4");
-                    tank.Element("EnergyFactor").SetAttributeValue("value", Math.Round(System.Convert.ToDouble(GetCellValue("General", "P5")), 2));
+                    tank.Element("EnergyFactor").SetAttributeValue("value", Math.Round(Convert.ToDouble(GetCellValue("General", "P5")), 2));
                 }
                 if (tank.Element("EnergySource").Attribute("code").Value == "1")
                 {
@@ -238,7 +242,7 @@ namespace HotREF
                 }
                 else
                 {
-                    tank.Element("EnergyFactor").SetAttributeValue("value", Math.Round(System.Convert.ToDouble(GetCellValue("General", "P5")),2));
+                    tank.Element("EnergyFactor").SetAttributeValue("value", Math.Round(Convert.ToDouble(GetCellValue("General", "P5")),2));
                 }
             }
             return house;
@@ -249,13 +253,13 @@ namespace HotREF
         {
             foreach (XElement vent in house.Descendants("WholeHouseVentilatorList"))
             {
-                double ls = Math.Round(System.Convert.ToDouble(GetCellValue("General", "H4")) * 0.47195,4);
+                double ls = Math.Round(Math.Round(Convert.ToDouble(GetCellValue("General", "H4")),1) * 0.47195,4);
 
                 vent.Add(
                     new XElement("BaseVentilator",
                     new XAttribute("supplyFlowrate", ls.ToString()),
                     new XAttribute("exhaustFlowrate", ls.ToString()),
-                    new XAttribute("fanPower1", GetCellValue("General", "K4").ToString()),
+                    new XAttribute("fanPower1", Math.Round(Convert.ToDouble(GetCellValue("General", "K4")),1).ToString()),
                     new XAttribute("isDefaultFanpower", "false"),
                     new XAttribute("isEnergyStar", "false"),
                     new XAttribute("isHomeVentilatingInstituteCertified", "false"),
@@ -271,7 +275,7 @@ namespace HotREF
 
         public XDocument Doors(XDocument house)
         {
-            double width = Math.Round((System.Convert.ToDouble(GetCellValue("General", "N10")) * 0.0254), 4);
+            double width = Math.Round((Convert.ToDouble(GetCellValue("General", "N10")) * 0.0254), 4);
             string ff = "1st Flr";
             foreach (XElement wall in house.Descendants("Wall"))
             {
@@ -312,6 +316,13 @@ namespace HotREF
             double size = Math.Round((System.Convert.ToDouble(GetCellValue("General", "N9")) * 25.4), 6);
             string floors = "2nd Flr";
             List<string> wallList = new List<string>();
+            Dictionary<string, string> facingDirection = new Dictionary<string, string>()
+            {
+                {"North", "5" },
+                {"South", "1" },
+                {"West", "7" },
+                {"East", "3"},
+            };
 
             var walls =
                 from el in house.Descendants("House").Descendants("Wall").Descendants("Label")
@@ -322,6 +333,7 @@ namespace HotREF
             {
                 wallList.Add(wall);
             }
+
             //Checks if a second floor exists. If not, windows are added to the first floor
             if (wallList.Contains("2nd Flr") != true)
             {
@@ -329,11 +341,12 @@ namespace HotREF
             }
             foreach (XElement wall in house.Descendants("Wall"))
             {
-                    foreach (XElement comp in wall.Descendants("Components"))
+                foreach (XElement comp in wall.Descendants("Components"))
+                {
+                    if (floors.Equals(wall.Element("Label").Value))
                     {
-                        if (floors.Equals(wall.Element("Label").Value))
+                        foreach (KeyValuePair<string, string> pair in facingDirection)
                         {
-                            //Add North Window
                             comp.Add(
                                 new XElement("Window",
                                 new XAttribute("number", "1"),
@@ -341,7 +354,7 @@ namespace HotREF
                                 new XAttribute("shgc", "0.26"),
                                 new XAttribute("adjacentEnclosedSpace", "false"),
                                 new XAttribute("id", maxID),
-                                    new XElement("Label", "North"),
+                                    new XElement("Label", pair.Key),
                                     new XElement("Construction",
                                     new XAttribute("energyStar", "false"),
                                         new XElement("Type", "ABCRef",
@@ -361,108 +374,13 @@ namespace HotREF
                                     new XAttribute("curtain", "1"),
                                     new XAttribute("shutterRValue", "0")),
                                     new XElement("FacingDirection",
-                                    new XAttribute("code", "5"),
+                                    new XAttribute("code", pair.Value),
                                     new XElement("English", "North"),
                                     new XElement("French", "Nord"))));
                             maxID++;
-                            //Add South window
-                            comp.Add(
-                                new XElement("Window",
-                                new XAttribute("number", "1"),
-                                new XAttribute("er", "-32.1684"),
-                                new XAttribute("shgc", "0.26"),
-                                new XAttribute("adjacentEnclosedSpace", "false"),
-                                new XAttribute("id", maxID),
-                                    new XElement("Label", "South"),
-                                    new XElement("Construction",
-                                    new XAttribute("energyStar", "false"),
-                                        new XElement("Type", "ABCRef",
-                                        new XAttribute("idref", ("Code " + codeID)),
-                                        new XAttribute("rValue", windowRValue))),
-                                    new XElement("Measurements",
-                                    new XAttribute("height", size),
-                                    new XAttribute("width", size),
-                                    new XAttribute("headerHeight", "0"),
-                                    new XAttribute("overhangWidth", "0"),
-                                        new XElement("Tilt",
-                                        new XAttribute("code", "1"),
-                                        new XAttribute("value", "90"),
-                                        new XElement("English", "Vertical"),
-                                        new XElement("French", "Verticale"))),
-                                    new XElement("Shading",
-                                    new XAttribute("curtain", "1"),
-                                    new XAttribute("shutterRValue", "0")),
-                                    new XElement("FacingDirection",
-                                    new XAttribute("code", "1"),
-                                    new XElement("English", "South"),
-                                    new XElement("French", "Sud"))));
-                            maxID++;
-                            //Add East window
-                            comp.Add(
-                                new XElement("Window",
-                                new XAttribute("number", "1"),
-                                new XAttribute("er", "-32.1684"),
-                                new XAttribute("shgc", "0.26"),
-                                new XAttribute("adjacentEnclosedSpace", "false"),
-                                new XAttribute("id", maxID),
-                                    new XElement("Label", "East"),
-                                    new XElement("Construction",
-                                    new XAttribute("energyStar", "false"),
-                                        new XElement("Type", "ABCRef",
-                                        new XAttribute("idref", ("Code " + codeID)),
-                                        new XAttribute("rValue", windowRValue))),
-                                    new XElement("Measurements",
-                                    new XAttribute("height", size),
-                                    new XAttribute("width", size),
-                                    new XAttribute("headerHeight", "0"),
-                                    new XAttribute("overhangWidth", "0"),
-                                        new XElement("Tilt",
-                                        new XAttribute("code", "1"),
-                                        new XAttribute("value", "90"),
-                                        new XElement("English", "Vertical"),
-                                        new XElement("French", "Verticale"))),
-                                    new XElement("Shading",
-                                    new XAttribute("curtain", "1"),
-                                    new XAttribute("shutterRValue", "0")),
-                                    new XElement("FacingDirection",
-                                    new XAttribute("code", "3"),
-                                    new XElement("English", "East"),
-                                    new XElement("French", "Est"))));
-                            maxID++;
-                            //Add West window
-                            comp.Add(
-                                new XElement("Window",
-                                new XAttribute("number", "1"),
-                                new XAttribute("er", "-32.1684"),
-                                new XAttribute("shgc", "0.26"),
-                                new XAttribute("adjacentEnclosedSpace", "false"),
-                                new XAttribute("id", maxID),
-                                    new XElement("Label", "West"),
-                                    new XElement("Construction",
-                                    new XAttribute("energyStar", "false"),
-                                        new XElement("Type", "ABCRef",
-                                        new XAttribute("idref", ("Code " + codeID)),
-                                        new XAttribute("rValue", windowRValue))),
-                                    new XElement("Measurements",
-                                    new XAttribute("height", size),
-                                    new XAttribute("width", size),
-                                    new XAttribute("headerHeight", "0"),
-                                    new XAttribute("overhangWidth", "0"),
-                                        new XElement("Tilt",
-                                        new XAttribute("code", "1"),
-                                        new XAttribute("value", "90"),
-                                        new XElement("English", "Vertical"),
-                                        new XElement("French", "Verticale"))),
-                                    new XElement("Shading",
-                                    new XAttribute("curtain", "1"),
-                                    new XAttribute("shutterRValue", "0")),
-                                    new XElement("FacingDirection",
-                                    new XAttribute("code", "7"),
-                                    new XElement("English", "West"),
-                                    new XElement("French", "Ouest"))));
-                            maxID++;
                         }
                     }
+                }
             }
             return house;
         }
@@ -503,7 +421,7 @@ namespace HotREF
         {
             string value = null;
 
-            using (FileStream fs = new FileStream(excelFilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+            using (FileStream fs = new FileStream(ExcelFilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             {
                 using (SpreadsheetDocument spreadsheet = SpreadsheetDocument.Open(fs, false))
                 {

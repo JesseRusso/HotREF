@@ -1,6 +1,6 @@
 ﻿namespace HotREF
 {
-    partial class Form1
+    partial class MainForm
     {
         /// <summary>
         /// Required designer variable.
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             this.buttonExcel = new System.Windows.Forms.Button();
@@ -62,7 +62,7 @@
             this.buttonExcel.TabIndex = 0;
             this.buttonExcel.Text = "Choose Worksheet";
             this.buttonExcel.UseVisualStyleBackColor = true;
-            this.buttonExcel.Click += new System.EventHandler(this.Button1_Click_1);
+            this.buttonExcel.Click += new System.EventHandler(this.Choose_Worksheet_Button);
             // 
             // selectFile
             // 
@@ -198,7 +198,7 @@
             this.worksheetTextBox.TabIndex = 22;
             this.worksheetTextBox.Text = "No file selected";
             // 
-            // Form1
+            // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -214,7 +214,7 @@
             this.MainMenuStrip = this.menuStrip1;
             this.MaximizeBox = false;
             this.MinimumSize = new System.Drawing.Size(365, 300);
-            this.Name = "Form1";
+            this.Name = "MainForm";
             this.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.Text = "HotREF";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);

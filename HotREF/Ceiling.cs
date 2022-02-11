@@ -53,27 +53,27 @@ namespace HotREF
 
         private void SetType()
         {
-            switch (ceilingType)
+            switch (ceilingType.ToLower())
             {
-                case "Gable":
+                case "gable":
                     typeCode = "2";
                     typeEng = "Attic/gable";
                     typeFr = "Combles/pignon";
                     rValue = CreateProp.ceilingRValue;
                     break;
-                case "Hip":
+                case "hip":
                     typeCode = "3";
                     typeEng = "Attic/hip";
                     typeFr = "Combles/arête";
                     rValue = CreateProp.ceilingRValue;
                     break;
-                case "Cathedral":
+                case "cathedral":
                     typeCode = "4";
                     typeEng = "Cathedral";
                     typeFr = "Cathédrale";
                     rValue = CreateProp.cathedralRValue;
                     break;
-                case "Flat":
+                case "flat":
                     typeCode = "5";
                     typeEng = "Flat";
                     typeFr = "Plat";
@@ -81,7 +81,7 @@ namespace HotREF
                     ceilingSlope = "0";
                     rValue = CreateProp.flatCeilingRValue;
                     break;
-                case "Scissor":
+                case "scissor":
                     typeCode = "6";
                     typeEng = "Scissor";
                     typeFr = "Ciseaux";
@@ -161,7 +161,6 @@ namespace HotREF
                 slopeFr = "Spécifié par l'utilisateur";
             }
         }
-
         public void AddCeiling()
         {
             if (CreateProp.ceilingCount > 1 && ceilingName.Contains("2nd"))
