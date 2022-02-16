@@ -7,7 +7,6 @@ using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
-using System.Windows.Forms;
 
 namespace HotREF
 {
@@ -60,32 +59,50 @@ namespace HotREF
                                   where el.IsEmpty == false
                                   select el).First().Value;
             builder = builderName;
+            CityCheck();
         }
-        //Not in use
+        //Checks special city cells P1:P5 in spreadsheet and sets
+        //city-specific settings like weather station location,
+        //NAI terrain info, and city name in specifications
         private void CityCheck()
         {
             string city;
-            if (GetCellValue("Calc", "P1").ToLower() == "y")
+                if (GetCellValue("Calc", "P1")?.ToLower() == "y")
+                {
+                    city = "Okotoks";
+                }
+                else if (GetCellValue("Calc", "P2")?.ToLower() == "y")
+                {
+                    city = "Edmonton";
+                }
+                else if (GetCellValue("Calc", "P3")?.ToLower() == "y")
+                {
+                    city = "Airdrie";
+                }
+                else if (GetCellValue("Calc", "P4")?.ToLower() == "y")
+                {
+                    city = "Victoria";
+                }
+                else if (GetCellValue("Calc", "P5")?.ToLower() == "y")
+                {
+                    city = "Cochrane";
+                }
+                else { city = "Calgary"; }
+
+            ChangeCityWeather(city);
+        }
+        private void ChangeCityWeather(string city)
+        {
+            newHouse.Element("HouseFile").Element("ProgramInformation").Element("Client").Element("StreetAddress").Element("City").SetValue(city);
+            switch (city)
             {
-                city = "Okotoks";
+                case "Cochrane":
+                    newHouse.Element("HouseFile").Element("ProgramInformation").Element("Weather").Element("Location").SetAttributeValue("code", 10);
+                    break;
+                case "Okotoks":
+                    newHouse.Element("HouseFile").Element("House").Element("NaturalAirInfiltration").Element("Specifications").Element("BuildingSite").Element("Terrain").SetAttributeValue("code", 3);
+                    break;
             }
-            else if (GetCellValue("Calc", "P2").ToLower() == "y")
-            {
-                city = "Edmonton";
-            }
-            else if (GetCellValue("Calc", "P3").ToLower() == "y")
-            {
-                city = "Airdrie";
-            }
-            else if (GetCellValue("Calc", "P4").ToLower() == "y")
-            {
-                city = "Victoria";
-            }
-            else if (GetCellValue("Calc", "P5").ToLower() == "y")
-            {
-                city = "Cochrane";
-            }
-            else city = "Calgary";
         }
 
         /* Copies R value from first wall element with "1st" in its name to be used in new wall creation.
@@ -425,8 +442,6 @@ namespace HotREF
                 string dhwModel = GetCellValue("Summary", "K74");
                 string dhwSize = GetCellValue("Summary", "K75");
                 string dhwEF = GetCellValue("Summary", "K77");
-
-                
                 WaterHeater tank = new WaterHeater(dhwMake, dhwModel, dhwEF, dhwSize, false, isPrimary);
                 tank.AddTank();
             }

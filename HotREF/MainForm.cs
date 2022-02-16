@@ -56,14 +56,15 @@ namespace HotREF
         {
             if (propHouse == null)
             {
-                MessageBox.Show("No proposed file selected");
+                MessageBox.Show("You must select a proposed file first.", "No file selected", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
-            else if(excelFilePath == null)
+            else if (excelFilePath == null)
             {
-                MessageBox.Show("No Excel file selected");
+                MessageBox.Show("You must select an Excel file first.", "No file selected", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
             else
             {
+                Cursor cursor = Cursors.WaitCursor;
                 CreateRef cr = new CreateRef(propHouse, zone, excelFilePath);
                 cr.FindID(propHouse);
                 propHouse = cr.Remover(propHouse);
@@ -74,14 +75,17 @@ namespace HotREF
                 propHouse = cr.Doors(propHouse);
                 propHouse = cr.Windows(propHouse);
                 propHouse = cr.HotWater(propHouse);
+                Cursor = Cursors.Default;
 
                 MessageBox.Show("Please save and check results", "REF changes made");
+                SaveFileDialog sfd = new SaveFileDialog
+                {
+                    Filter = "House File|*.h2k",
+                    DefaultExt = "h2k",
+                    InitialDirectory = directoryString,
+                    FileName = $"{proposedAddress}-REFERENCE",
+                };
 
-                SaveFileDialog sfd = new SaveFileDialog();
-                sfd.Filter = "House File|*.h2k";
-                sfd.DefaultExt = "h2k";
-                sfd.InitialDirectory = directoryString;
-                sfd.FileName = $"{proposedAddress}-REFERENCE";
                 if (sfd.ShowDialog() == DialogResult.OK)
                 {
                     propHouse.Save(sfd.FileName);
@@ -97,6 +101,7 @@ namespace HotREF
             CreateProp cp = new CreateProp(excelFilePath, template);
             cp.FindID(template);
             cp.ChangeAddress(proposedAddress);
+            
             try { cp.ChangeEquipment(); }
             catch
             {
@@ -214,11 +219,13 @@ namespace HotREF
             newHouse = cp.GetHouse();
 
             Cursor = Cursors.Default;
-            SaveFileDialog sfd = new SaveFileDialog();
-            sfd.Title = "Save Generated Proposed House";
-            sfd.Filter = " H2K files (*.h2k)| *.h2k";
-            sfd.InitialDirectory = Path.GetDirectoryName(excelFilePath);
-            sfd.FileName = $"{proposedAddress}-PROPOSED";
+            SaveFileDialog sfd = new SaveFileDialog
+            {
+                Title = "Save Generated Proposed House",
+                Filter = " H2K files (*.h2k)| *.h2k",
+                InitialDirectory = Path.GetDirectoryName(excelFilePath),
+                FileName = $"{proposedAddress}-PROPOSED",
+            };
 
             if (sfd.ShowDialog() == DialogResult.OK)
             {
