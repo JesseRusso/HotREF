@@ -201,11 +201,11 @@ namespace HotREF
             bool bsmtUnder4Feet = false;
             bool slabOnGrade = false;
 
-            if (GetCellValue("Calc", "N4").ToLower() == "y")
+            if (GetCellValue("Calc", "N4") == "y" || GetCellValue("Calc", "N4") == "Y")
             {
                 bsmtUnder4Feet = true;
             }
-            if (GetCellValue("Calc", "N5").ToLower() == "y")
+            if (GetCellValue("Calc", "N5") == "y"|| GetCellValue("Calc", "N5") == "Y")
             {
                 slabOnGrade = true;
             }
