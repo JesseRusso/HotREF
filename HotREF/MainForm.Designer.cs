@@ -32,7 +32,7 @@
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             this.buttonExcel = new System.Windows.Forms.Button();
-            this.selectFile = new System.Windows.Forms.Button();
+            this.selectProposedFile = new System.Windows.Forms.Button();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.createRefButton = new System.Windows.Forms.Button();
             this.label4 = new System.Windows.Forms.Label();
@@ -64,15 +64,15 @@
             this.buttonExcel.UseVisualStyleBackColor = true;
             this.buttonExcel.Click += new System.EventHandler(this.Choose_Worksheet_Button);
             // 
-            // selectFile
+            // selectProposedFile
             // 
-            this.selectFile.Location = new System.Drawing.Point(19, 19);
-            this.selectFile.Name = "selectFile";
-            this.selectFile.Size = new System.Drawing.Size(209, 23);
-            this.selectFile.TabIndex = 3;
-            this.selectFile.Text = "Select Proposed File";
-            this.selectFile.UseVisualStyleBackColor = true;
-            this.selectFile.Click += new System.EventHandler(this.SelectFile_Click);
+            this.selectProposedFile.Location = new System.Drawing.Point(19, 19);
+            this.selectProposedFile.Name = "selectProposedFile";
+            this.selectProposedFile.Size = new System.Drawing.Size(209, 23);
+            this.selectProposedFile.TabIndex = 3;
+            this.selectProposedFile.Text = "Select Proposed File";
+            this.selectProposedFile.UseVisualStyleBackColor = true;
+            this.selectProposedFile.Click += new System.EventHandler(this.SelectProposedFile_Click);
             // 
             // textBox1
             // 
@@ -110,7 +110,7 @@
             this.groupBox1.Controls.Add(this.label4);
             this.groupBox1.Controls.Add(this.textBox1);
             this.groupBox1.Controls.Add(this.createRefButton);
-            this.groupBox1.Controls.Add(this.selectFile);
+            this.groupBox1.Controls.Add(this.selectProposedFile);
             this.groupBox1.Location = new System.Drawing.Point(12, 202);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(336, 147);
@@ -233,7 +233,7 @@
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
         private System.Windows.Forms.SaveFileDialog saveFileDialog1;
         private System.Windows.Forms.Button buttonExcel;
-        private System.Windows.Forms.Button selectFile;
+        private System.Windows.Forms.Button selectProposedFile;
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.Button createRefButton;
         private System.Windows.Forms.Label label4;

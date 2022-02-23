@@ -29,6 +29,7 @@ namespace HotREF
             filePath = excelFilePath;
             newHouse = new XDocument(template);
             GetBuilder();
+            CityCheck();
         }
         public XDocument GetHouse()
         {
@@ -59,7 +60,6 @@ namespace HotREF
                                   where el.IsEmpty == false
                                   select el).First().Value;
             builder = builderName;
-            CityCheck();
         }
         //Checks special city cells P1:P5 in spreadsheet and sets
         //city-specific settings like weather station location,

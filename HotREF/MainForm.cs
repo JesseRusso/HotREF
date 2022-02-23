@@ -31,7 +31,7 @@ namespace HotREF
             InitializeComponent();
         }
 
-        private void SelectFile_Click(object sender, EventArgs e)
+        private void SelectProposedFile_Click(object sender, EventArgs e)
         {
             OpenFileDialog ofd = new OpenFileDialog();
             ofd.Title = "Select Proposed File";
@@ -94,8 +94,36 @@ namespace HotREF
             }
         }
 
+        private void TemplateButton_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog ofd = new OpenFileDialog();
+            ofd.Title = "Select HOT2000 builder template";
+            ofd.Filter = "House Files(*.h2k) | *.h2k";
+            ofd.InitialDirectory = Settings.Default.TemplateDir;
+
+            if (ofd.ShowDialog() == DialogResult.OK)
+            {
+                templatePath = ofd.FileName;
+            }
+            ofd.Dispose();
+        }
+
         private void CreateProp_Click(object sender, EventArgs e)
         {
+            if(templatePath == null)
+            {
+                MessageBox.Show("Select a builder template to modify",
+                    "No builder template selected",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            if(excelFilePath == null)
+            {
+                MessageBox.Show("Select a spreadsheet to copy from.", 
+                    "No spreadsheet selected",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
             Cursor = Cursors.WaitCursor;
             XDocument template = new XDocument(XDocument.Load(templatePath));
             CreateProp cp = new CreateProp(excelFilePath, template);
@@ -232,20 +260,6 @@ namespace HotREF
                 newHouse.Save(sfd.FileName);
             }
             template = null;
-        }
-
-        private void TemplateButton_Click(object sender, EventArgs e)
-        {
-            OpenFileDialog ofd = new OpenFileDialog();
-            ofd.Title = "Select HOT2000 builder template";
-            ofd.Filter = "House Files(*.h2k) | *.h2k";
-            ofd.InitialDirectory = Settings.Default.TemplateDir;
-
-            if (ofd.ShowDialog() == DialogResult.OK)
-            {
-                templatePath = ofd.FileName;
-            }
-            ofd.Dispose();
         }
 
         private void ZoneSelectBox_SelectedIndexChanged(object sender, EventArgs e)
