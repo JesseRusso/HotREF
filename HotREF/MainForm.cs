@@ -139,6 +139,15 @@ namespace HotREF
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
+            try { cp.CheckAC(); }
+            catch
+            {
+                Cursor = Cursors.Default;
+                MessageBox.Show("Unexpected value in A/C selection.",
+                    "Something went wrong",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
             try { cp.ChangeSpecs(); }
             catch
             {

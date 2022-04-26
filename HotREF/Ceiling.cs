@@ -21,7 +21,7 @@ namespace HotREF
         private string slopeValue;
         private string slopeEng;
         private string slopeFr;
-        private string slopeRise;
+        private string vaultRise;
         private string slopeName = "";
         private string rValue;
 
@@ -43,7 +43,7 @@ namespace HotREF
             ceilingName = name;
             ceilingType = type;
             ceilingSlope = slope;
-            slopeRise = rise;
+            vaultRise = rise;
             heelHeight = Math.Round(System.Convert.ToDouble(heel) * 0.3048, 3).ToString();
             areaMetric = Math.Round(System.Convert.ToDouble(area) * 0.092903, 4).ToString();
             lengthMetric = Math.Round(System.Convert.ToDouble(length) * 0.3048, 4).ToString();
@@ -94,7 +94,7 @@ namespace HotREF
                     rValue = CreateProp.ceilingRValue;
                     break;
             }
-            if (CreateProp.builder.ToLower().Contains("mckee") && Convert.ToSByte(slopeRise) < 5)
+            if (CreateProp.builder.ToLower().Contains("mckee") && Convert.ToDouble(vaultRise) < 5)
             {
                 rValue = CreateProp.ceilingRValue;
             }

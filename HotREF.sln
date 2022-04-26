@@ -10,23 +10,17 @@ EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
-		Debug|Default = Debug|Default
 		Debug|x64 = Debug|x64
 		Release|Any CPU = Release|Any CPU
-		Release|Default = Release|Default
 		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{B7C8D39F-CAA6-4925-9D5C-52524FDF9448}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B7C8D39F-CAA6-4925-9D5C-52524FDF9448}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B7C8D39F-CAA6-4925-9D5C-52524FDF9448}.Debug|Default.ActiveCfg = Debug|Any CPU
-		{B7C8D39F-CAA6-4925-9D5C-52524FDF9448}.Debug|Default.Build.0 = Debug|Any CPU
 		{B7C8D39F-CAA6-4925-9D5C-52524FDF9448}.Debug|x64.ActiveCfg = Debug|x64
 		{B7C8D39F-CAA6-4925-9D5C-52524FDF9448}.Debug|x64.Build.0 = Debug|x64
 		{B7C8D39F-CAA6-4925-9D5C-52524FDF9448}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B7C8D39F-CAA6-4925-9D5C-52524FDF9448}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B7C8D39F-CAA6-4925-9D5C-52524FDF9448}.Release|Default.ActiveCfg = Release|Any CPU
-		{B7C8D39F-CAA6-4925-9D5C-52524FDF9448}.Release|Default.Build.0 = Release|Any CPU
 		{B7C8D39F-CAA6-4925-9D5C-52524FDF9448}.Release|x64.ActiveCfg = Release|x64
 		{B7C8D39F-CAA6-4925-9D5C-52524FDF9448}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
@@ -34,30 +28,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {B24DDFC2-D82F-4240-85D6-F42F16842B65}
-	EndGlobalSection
-	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|Any CPU = Debug|Any CPU
-		Debug|Default = Debug|Default
-		Debug|x64 = Debug|x64
-		Release|Any CPU = Release|Any CPU
-		Release|Default = Release|Default
-		Release|x64 = Release|x64
-	EndGlobalSection
-	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|Any CPU = Debug|Any CPU
-		Debug|Default = Debug|Default
-		Debug|x64 = Debug|x64
-		Release|Any CPU = Release|Any CPU
-		Release|Default = Release|Default
-		Release|x64 = Release|x64
-	EndGlobalSection
-	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|Any CPU = Debug|Any CPU
-		Debug|Default = Debug|Default
-		Debug|x64 = Debug|x64
-		Release|Any CPU = Release|Any CPU
-		Release|Default = Release|Default
-		Release|x64 = Release|x64
+		SolutionGuid = {EA0E118C-DD72-4860-BB22-D66FE20A76CA}
 	EndGlobalSection
 EndGlobal

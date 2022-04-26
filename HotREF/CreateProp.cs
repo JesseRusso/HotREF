@@ -464,6 +464,40 @@ namespace HotREF
                 tank.AddTank();
             }   
         }
+        public void CheckAC()
+        {
+            string ACBtus = GetCellValue("General", "Q26");
+            if (Convert.ToInt32(ACBtus) > 0)
+            {
+                XElement bsmtTemps = newHouse.Element("HouseFile").Element("House").Element("Temperatures").Element("Basement");
+                bsmtTemps.SetAttributeValue("cooled", "true");
+
+                XElement type2HeatingCooling = (XElement)(from el in newHouse.Descendants("HeatingCooling").Descendants("Type2")
+                                                          select el).FirstOrDefault();
+                                                          
+                 type2HeatingCooling.Add(
+                     new XElement("AirConditioning",
+                         new XElement("EquipmentInformation",
+                             new XAttribute("energystar", "false"),
+                             new XElement("Manufacturer", GetCellValue("General", "N25")),
+                             new XElement("Model", GetCellValue("General", "P25"))),
+                         new XElement("Equipment",
+                             new XAttribute("crankcaseHeater", "60"),
+                             new XElement("CentralType",
+                                 new XAttribute("code", "1"))),
+                         new XElement("Specifications",
+                             new XAttribute("sizingFactor", "1"),
+                                 new XElement("RatedCapacity",
+                                     new XAttribute("code", "2"),
+                                     new XAttribute("value", "2.015"),
+                                     new XAttribute("uiUnits", "btu/hr")),
+                             new XElement("Efficiency", new XAttribute("isCop", "false"), new XAttribute("value", GetCellValue("General", "O26")))),
+                         new XElement("CoolingParameters", new XAttribute("sensibleHeatRatio", "0.76"), new XAttribute("openableWindowArea", "0"),
+                             new XElement("FansAndPump", new XAttribute("flowRate", "123"), new XAttribute("hasEnergyEfficientMotor", "false"),
+                                 new XElement("Mode", new XAttribute("code", "1")),
+                                 new XElement("Power", new XAttribute("isCalculated", "true"))))));
+            }
+        }
 
          //Separates the strings in the filename and writes them as the address in the file
         public void ChangeAddress(string address)
@@ -841,7 +875,6 @@ namespace HotREF
             }
             return value;
         }
-        //Separates camel case strings with spaces
         static string CamelCaseToSpaceSeparated(string text)
         {
             string[] words = Regex.Matches(text, @"([A-Z]+(?![a-z])|[A-Z][a-z]+|[0-9]+|[a-z]+)")
