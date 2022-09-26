@@ -464,6 +464,7 @@ namespace HotREF
                 tank.AddTank();
             }   
         }
+        //Checks excel sheet for selected A/C unit and modifies file if there is a model chosen
         public void CheckAC()
         {
             string ACBtus = GetCellValue("General", "Q26");

@@ -204,7 +204,7 @@ namespace HotREF
 
         public XDocument HotWater(XDocument house)
         {
-            //Changes DHW tank EF value
+            //Changes main and secondary (if applicable) DHW tank EF value
             foreach (XElement tank in house.Descendants("HotWater").Descendants("Primary"))
             {
                 //check if instantaneous heater. Change to tank if true.
@@ -214,10 +214,13 @@ namespace HotREF
                     tank.Element("TankType").SetAttributeValue("code", "9");
                     tank.Element("TankVolume").SetAttributeValue("code", "4");
                     tank.Element("EnergyFactor").SetAttributeValue("value", Math.Round(Convert.ToDouble(GetCellValue("General", "P5")),2));
+                    tank.Element("EnergyFactor").SetAttributeValue("isUniform", "false");
                 }
+                //If electric tank, use electric tank reference EF
                 else if(tank.Element("EnergySource").Attribute("code").Value == "1")
                 {
                     tank.Element("EnergyFactor").SetAttributeValue("value", GetCellValue("General", "J31"));
+                    tank.Element("EnergyFactor").SetAttributeValue("isUniform", "false");
                 }
                 else
                 {
@@ -225,6 +228,10 @@ namespace HotREF
                     {
                         ef.SetAttributeValue("value", Math.Round(Convert.ToDouble(GetCellValue("General", "P5")), 2));
                     }
+                }
+                if(tank.Element("DrawPattern") != null)
+                {
+                    tank.Element("DrawPattern").Remove();
                 }
             } 
             foreach(XElement tank in house.Descendants("HotWater").Descendants("Secondary"))
@@ -235,14 +242,21 @@ namespace HotREF
                     tank.Element("TankType").SetAttributeValue("code", "9");
                     tank.Element("TankVolume").SetAttributeValue("code", "4");
                     tank.Element("EnergyFactor").SetAttributeValue("value", Math.Round(Convert.ToDouble(GetCellValue("General", "P5")), 2));
+                    tank.Element("EnergyFactor").SetAttributeValue("isUniform", "false");
                 }
                 if (tank.Element("EnergySource").Attribute("code").Value == "1")
                 {
                     tank.Element("EnergyFactor").SetAttributeValue("value", GetCellValue("General", "J31"));
+                    tank.Element("EnergyFactor").SetAttributeValue("isUniform", "false");
                 }
                 else
                 {
                     tank.Element("EnergyFactor").SetAttributeValue("value", Math.Round(Convert.ToDouble(GetCellValue("General", "P5")),2));
+                    tank.Element("EnergyFactor").SetAttributeValue("isUniform", "false");
+                }
+                if (tank.Element("DrawPattern") != null)
+                {
+                    tank.Element("DrawPattern").Remove();
                 }
             }
             return house;
