@@ -589,6 +589,15 @@ namespace HotREF
                         houseType.Element("French").SetValue("Double/semi-détaché");
                 }
             }
+            SetDate();
+        }
+        public void SetDate()
+        {
+            XElement xelement = newHouse.Element("HouseFile").Element("ProgramInformation").Element("File");
+            DateTime dateTime = DateTime.UtcNow;
+            dateTime = dateTime.Date;
+            string date = dateTime.ToString("yyyy-MM-dd");
+            xelement.SetAttributeValue("evaluationDate", date);
         }
         public void ChangeFloors()
         {
@@ -876,6 +885,7 @@ namespace HotREF
             }
             return value;
         }
+        //stolen regex to separate filename into an address
         static string CamelCaseToSpaceSeparated(string text)
         {
             string[] words = Regex.Matches(text, @"([A-Z]+(?![a-z])|[A-Z][a-z]+|[0-9]+|[a-z]+)")
