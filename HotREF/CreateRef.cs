@@ -40,6 +40,7 @@ namespace HotREF
             {
                 codeIDs.Add((code.Last()));
             }
+            codeID = int.Parse(codeIDs.Last().ToString()) +1;
             weatherZone = zone;
             SetZone();
             ExcelFilePath = excelPath;
@@ -207,6 +208,7 @@ namespace HotREF
             //Changes main and secondary (if applicable) DHW tank EF value
             foreach (XElement tank in house.Descendants("HotWater").Descendants("Primary"))
             {
+                tank.Element("EnergyFactor").SetAttributeValue("isUniform", "false");
                 //check if instantaneous heater. Change to tank if true.
                 if (tank.Element("TankType").Element("English").Value.ToString().Equals("Instantaneous (condensing)"))
                 {
@@ -214,13 +216,11 @@ namespace HotREF
                     tank.Element("TankType").SetAttributeValue("code", "9");
                     tank.Element("TankVolume").SetAttributeValue("code", "4");
                     tank.Element("EnergyFactor").SetAttributeValue("value", Math.Round(Convert.ToDouble(GetCellValue("General", "P5")),2));
-                    tank.Element("EnergyFactor").SetAttributeValue("isUniform", "false");
                 }
                 //If electric tank, use electric tank reference EF
                 else if(tank.Element("EnergySource").Attribute("code").Value == "1")
                 {
                     tank.Element("EnergyFactor").SetAttributeValue("value", GetCellValue("General", "J31"));
-                    tank.Element("EnergyFactor").SetAttributeValue("isUniform", "false");
                 }
                 else
                 {
@@ -236,23 +236,21 @@ namespace HotREF
             } 
             foreach(XElement tank in house.Descendants("HotWater").Descendants("Secondary"))
             {
+                tank.Element("EnergyFactor").SetAttributeValue("isUniform", "false"); 
                 if (tank.Element("TankType").Element("English").Value.ToString().Equals("Instantaneous (condensing)"))
                 {
                     tank.SetAttributeValue("flueDiameter", "0");
                     tank.Element("TankType").SetAttributeValue("code", "9");
                     tank.Element("TankVolume").SetAttributeValue("code", "4");
                     tank.Element("EnergyFactor").SetAttributeValue("value", Math.Round(Convert.ToDouble(GetCellValue("General", "P5")), 2));
-                    tank.Element("EnergyFactor").SetAttributeValue("isUniform", "false");
                 }
                 if (tank.Element("EnergySource").Attribute("code").Value == "1")
                 {
                     tank.Element("EnergyFactor").SetAttributeValue("value", GetCellValue("General", "J31"));
-                    tank.Element("EnergyFactor").SetAttributeValue("isUniform", "false");
                 }
                 else
                 {
                     tank.Element("EnergyFactor").SetAttributeValue("value", Math.Round(Convert.ToDouble(GetCellValue("General", "P5")),2));
-                    tank.Element("EnergyFactor").SetAttributeValue("isUniform", "false");
                 }
                 if (tank.Element("DrawPattern") != null)
                 {
@@ -349,7 +347,7 @@ namespace HotREF
             }
 
             //Checks if a second floor exists. If not, windows are added to the first floor
-            if (wallList.Contains("2nd Flr") != true)
+            if (!wallList.Contains("2nd Flr"))
             {
                 floors = "1st Flr";
             }
